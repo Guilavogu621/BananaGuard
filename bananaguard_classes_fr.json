@@ -1,0 +1,30 @@
+{
+  "0": {
+    "nom": "Fusarium (Panama Disease)",
+    "agent": "Fusarium oxysporum",
+    "gravite": "Critique",
+    "traitement": "Aucun traitement curatif. Détruire les plants infectés immédiatement. Utiliser des variétés résistantes.",
+    "couleur": "rouge"
+  },
+  "1": {
+    "nom": "Plante Saine",
+    "agent": "Aucun",
+    "gravite": "Aucune",
+    "traitement": "Aucun traitement nécessaire. Continuer la surveillance régulière.",
+    "couleur": "vert"
+  },
+  "2": {
+    "nom": "Pestalotiopsis",
+    "agent": "Pestalotiopsis musarum",
+    "gravite": "Moyen",
+    "traitement": "Appliquer des fongicides à base de cuivre. Enlever les feuilles infectées.",
+    "couleur": "orange"
+  },
+  "3": {
+    "nom": "Black Sigatoka",
+    "agent": "Mycosphaerella fijiensis",
+    "gravite": "Élevé",
+    "traitement": "Traitement fongicide systémique. Enlever les feuilles atteintes. Améliorer la ventilation.",
+    "couleur": "rouge"
+  }
+}
