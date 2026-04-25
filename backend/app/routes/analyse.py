@@ -63,19 +63,22 @@ async def analyse_image(
         confidence = float(predictions[0][class_idx])
         
         # 4. Identification de la maladie
-        # Si le JSON est une liste ou un dict
-        if isinstance(ia_classes, list):
-            maladie = ia_classes[class_idx]
+        class_info = ia_classes.get(str(class_idx), ia_classes.get(class_idx, {}))
+        
+        if isinstance(class_info, dict):
+            maladie_nom = class_info.get("nom", f"Classe {class_idx}")
+            traitement_info = class_info.get("traitement", "Consultez la base de connaissances.")
         else:
-            maladie = ia_classes.get(str(class_idx), f"Classe {class_idx}")
+            maladie_nom = str(class_info) if class_info else f"Classe {class_idx}"
+            traitement_info = "Consultez la base de connaissances."
 
         # 5. Enregistrement dans l'historique
         nouvelle_analyse = Analyse(
             user_id=current_user.id,
-            maladie=maladie,
+            maladie=maladie_nom,
             confiance=confidence,
             image_url=file.filename,
-            traitement="Analyse effectuée avec succès. Consultez la base de connaissances pour le traitement."
+            traitement=traitement_info
         )
         db.add(nouvelle_analyse)
         db.commit()
@@ -83,8 +86,10 @@ async def analyse_image(
 
         return {
             "id": nouvelle_analyse.id,
-            "maladie": maladie,
+            "maladie": maladie_nom,
             "confiance": confidence,
+            "traitement": traitement_info,
+            "details": class_info if isinstance(class_info, dict) else {},
             "date": nouvelle_analyse.date_analyse
         }
 

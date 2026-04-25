@@ -11,3 +11,5 @@ pandas
 python-dotenv
 tensorflow-cpu
 pillow
+pytest
+httpx
