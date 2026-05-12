@@ -7,7 +7,7 @@ from app.database import Base, get_db
 import io
 from PIL import Image
 
-# Configuration de la base de données de test (SQLite en mémoire)
+# Configuration de la base de données de test (SQLite locale)
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -31,7 +31,7 @@ def setup_database():
 def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert "Bienvenue sur l'API BananaGuard" in response.json()["message"]
+    assert response.json() == {"message": "Bienvenue sur l'API BananaGuard. Accédez à /docs pour la documentation Swagger."}
 
 def test_signup_user():
     response = client.post(
@@ -57,29 +57,23 @@ def test_login_user():
     return response.json()["access_token"]
 
 def test_analyse_image_unauthorized():
-    # Test sans token
     response = client.post("/api/analyse/")
     assert response.status_code == 401
 
 def test_analyse_image_with_token():
-    # 1. Login pour avoir le token
     token = test_login_user()
     headers = {"Authorization": f"Bearer {token}"}
-    
-    # 2. Création d'une image factice
+
     file = io.BytesIO()
-    image = Image.new('RGB', (224, 224), color = 'red')
+    image = Image.new('RGB', (224, 224), color='red')
     image.save(file, 'jpeg')
     file.seek(0)
-    
-    # 3. Appel de l'API
+
     response = client.post(
         "/api/analyse/",
         headers=headers,
         files={"file": ("test.jpg", file, "image/jpeg")}
     )
-    
-    # Le test peut renvoyer 200 si le modèle est chargé, 
-    # ou 500 si le chemin du modèle est incorrect dans l'env de test
-    # On vérifie juste qu'on a passé l'étape de l'authentification
-    assert response.status_code in [200, 500] 
+
+    assert response.status_code in [200, 500]
+

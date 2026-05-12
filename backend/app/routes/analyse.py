@@ -4,6 +4,8 @@ import os
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+import shutil
+import uuid
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
@@ -63,22 +65,37 @@ async def analyse_image(
         confidence = float(predictions[0][class_idx])
         
         # 4. Identification de la maladie
-        class_info = ia_classes.get(str(class_idx), ia_classes.get(class_idx, {}))
-        
+        if isinstance(ia_classes, list):
+            class_info = ia_classes[class_idx]
+        else:
+            class_info = ia_classes.get(str(class_idx), ia_classes.get(class_idx, {}))
+
         if isinstance(class_info, dict):
             maladie_nom = class_info.get("nom", f"Classe {class_idx}")
-            traitement_info = class_info.get("traitement", "Consultez la base de connaissances.")
+            traitement = class_info.get("traitement", "Consultez la base de connaissances.")
+            details = class_info
         else:
             maladie_nom = str(class_info) if class_info else f"Classe {class_idx}"
-            traitement_info = "Consultez la base de connaissances."
+            traitement = "Consultez la base de connaissances."
+            details = {}
 
-        # 5. Enregistrement dans l'historique
+        # 5. Sauvegarde physique du fichier
+        file_extension = os.path.splitext(file.filename)[1]
+        unique_filename = f"{uuid.uuid4()}{file_extension}"
+        file_path = os.path.join("uploads", unique_filename)
+        
+        with open(file_path, "wb") as buffer:
+            buffer.write(content)
+
+        # 6. Enregistrement dans l'historique (nom du fichier seulement)
+        image_url = unique_filename
+        
         nouvelle_analyse = Analyse(
             user_id=current_user.id,
             maladie=maladie_nom,
             confiance=confidence,
-            image_url=file.filename,
-            traitement=traitement_info
+            image_url=image_url,
+            traitement=traitement
         )
         db.add(nouvelle_analyse)
         db.commit()
@@ -88,8 +105,8 @@ async def analyse_image(
             "id": nouvelle_analyse.id,
             "maladie": maladie_nom,
             "confiance": confidence,
-            "traitement": traitement_info,
-            "details": class_info if isinstance(class_info, dict) else {},
+            "traitement": traitement,
+            "details": details,
             "date": nouvelle_analyse.date_analyse
         }
 
