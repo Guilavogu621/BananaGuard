@@ -1,30 +1,126 @@
 {
-  "0": {
-    "nom": "Fusarium (Panama Disease)",
-    "agent": "Fusarium oxysporum",
-    "gravite": "Critique",
-    "traitement": "Aucun traitement curatif. Détruire les plants infectés immédiatement. Utiliser des variétés résistantes.",
-    "couleur": "rouge"
-  },
-  "1": {
-    "nom": "Plante Saine",
-    "agent": "Aucun",
-    "gravite": "Aucune",
-    "traitement": "Aucun traitement nécessaire. Continuer la surveillance régulière.",
-    "couleur": "vert"
-  },
-  "2": {
-    "nom": "Pestalotiopsis",
-    "agent": "Pestalotiopsis musarum",
-    "gravite": "Moyen",
-    "traitement": "Appliquer des fongicides à base de cuivre. Enlever les feuilles infectées.",
-    "couleur": "orange"
-  },
-  "3": {
-    "nom": "Black Sigatoka",
-    "agent": "Mycosphaerella fijiensis",
-    "gravite": "Élevé",
-    "traitement": "Traitement fongicide systémique. Enlever les feuilles atteintes. Améliorer la ventilation.",
-    "couleur": "rouge"
-  }
+  "version": "1.0",
+  "application": "BananaGuard",
+  "classes": [
+    {
+      "id": "healthy",
+      "code_technique": "healthy",
+      "nom_simple": "Plante saine",
+      "resultat_affiche": "✅ Plante saine détectée",
+      "description": "Aucun symptôme majeur de maladie détecté sur la feuille analysée.",
+      "niveau_gravite": "🟢 Faible",
+      "recommandations": [
+        "Continuer la surveillance régulière",
+        "Maintenir une bonne irrigation",
+        "Éviter l’excès d’humidité",
+        "Vérifier régulièrement l’apparition de taches ou déformations",
+        "Utiliser des outils agricoles propres"
+      ]
+    },
+    {
+      "id": "fusarium",
+      "code_technique": "fusarium",
+      "nom_simple": "Maladie de Panama (Fusariose)",
+      "resultat_affiche": "⚠ Fusariose détectée (Maladie de Panama)",
+      "description": "Le fusarium est très sérieux chez le bananier.",
+      "symptomes_typiques": [
+        "Jaunissement progressif",
+        "Flétrissement",
+        "Feuilles qui tombent",
+        "Pseudo-tronc parfois brun à l’intérieur"
+      ],
+      "niveau_gravite": "🔴 Élevé",
+      "recommandations": [
+        "Isoler immédiatement le plant infecté",
+        "Éviter le déplacement de sol contaminé",
+        "Désinfecter les outils agricoles",
+        "Retirer les plants fortement atteints",
+        "Améliorer le drainage du sol",
+        "Utiliser des variétés résistantes si disponibles"
+      ],
+      "traitement": {
+        "note": "Aucun traitement curatif totalement efficace actuellement.",
+        "mesures_controle": [
+          "Rotation culturale",
+          "Gestion stricte de l’hygiène",
+          "Contrôle de l’eau d’irrigation",
+          "Surveillance des plants voisins"
+        ]
+      }
+    },
+    {
+      "id": "deformation",
+      "code_technique": "deformation",
+      "nom_simple": "Feuille déformée",
+      "resultat_affiche": "⚠ Déformation foliaire détectée",
+      "description": "La feuille présente une croissance anormale ou une déformation visible.",
+      "causes_possibles": [
+        "Stress environnemental",
+        "Carence nutritive",
+        "Infection virale",
+        "Attaque d’insectes",
+        "Excès ou manque d’eau"
+      ],
+      "niveau_gravite": "🟡 Variable",
+      "recommandations": [
+        "Vérifier la présence d’insectes",
+        "Contrôler l’humidité du sol",
+        "Ajouter des nutriments équilibrés",
+        "Retirer les feuilles fortement déformées",
+        "Observer l’évolution sur plusieurs jours"
+      ],
+      "conseil": "Un diagnostic complémentaire peut être nécessaire."
+    },
+    {
+      "id": "fungal_leaf_spot",
+      "code_technique": "fungal_leaf_spot",
+      "nom_simple": "Taches foliaires (champignon)",
+      "resultat_affiche": "⚠ Maladie foliaire fongique détectée",
+      "description": "Maladie causée par des champignons foliaires très fréquents chez le bananier, notamment la Sigatoka noire/jaune et le Pestalotiopsis. Ces champignons se développent quand l'humidité est élevée et l'aération faible. Ils attaquent le limbe, réduisent la photosynthèse et affaiblissent la plante, ce qui diminue fortement le rendement.",
+      "symptomes_observes": [
+        "Petites taches sombres ou brunes qui s'agrandissent",
+        "Zones nécrosées entourées d'un halo jaune",
+        "Jaunissement progressif autour des lésions",
+        "Taches qui fusionnent et dessèchent la feuille",
+        "Propagation rapide par temps humide"
+      ],
+      "niveau_gravite": "🟠 Modéré à élevé",
+      "recommandations_immediates": [
+        "Retirer et brûler les feuilles fortement infectées (ne pas les laisser au sol)",
+        "Réduire l'humidité : éviter l'arrosage sur les feuilles, arroser tôt le matin",
+        "Espacer les plants pour améliorer la circulation d'air",
+        "Désherber autour des bananiers pour limiter l'humidité stagnante",
+        "Surveiller les nouvelles feuilles tous les 3-4 jours"
+      ],
+      "traitement": {
+        "prevention": {
+          "titre": "Option 1 — Prévention et contrôle cultural (à faire en premier)",
+          "actions": [
+            "Nettoyage régulier des feuilles mortes et débris",
+            "Désinfection des machettes et outils à l'eau de javel diluée",
+            "Amélioration du drainage, éviter les flaques",
+            "Rotation avec des cultures non-hôtes si possible"
+          ]
+        },
+        "curatif": {
+          "titre": "Option 2 — Traitement fongicide (si attaque avancée)",
+          "produits_locaux": [
+            "Mancozèbe (contact, préventif)",
+            "Chlorothalonil",
+            "Fongicide à base de cuivre (Bouillie bordelaise)",
+            "Fongicides systémiques homologués bananier"
+          ],
+          "mode_emploi": [
+            "Traiter tôt le matin ou en fin d'après-midi",
+            "Respecter strictement la dose indiquée sur l'étiquette",
+            "Alterner les matières actives pour éviter la résistance",
+            "Porter gants, masque et lunettes",
+            "Ne pas traiter avant la pluie"
+          ]
+        },
+        "avertissement": "Toujours demander conseil à un agent agricole local avant achat. Un mauvais dosage brûle la plante."
+      },
+      "conseil_ia_faible": "Si la photo est floue ou la confiance < 60%, reprenez une photo nette en plein jour ou consultez un technicien."
+    }
+  ]
 }

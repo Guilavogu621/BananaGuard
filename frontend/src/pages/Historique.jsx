@@ -72,8 +72,8 @@ const Historique = () => {
   const filteredAnalyses = analyses.filter(item => {
     const matchesSearch = item.maladie.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'Tous' || 
-                         (filterType === 'Sain' && item.maladie.toLowerCase().includes('sain')) ||
-                         (filterType === 'Malade' && !item.maladie.toLowerCase().includes('sain'));
+                         (filterType === 'Sain' && (item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy'))) ||
+                         (filterType === 'Malade' && !(item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy')));
     return matchesSearch && matchesFilter;
   });
 
@@ -187,7 +187,7 @@ const Historique = () => {
                         </div>
                       </td>
                       <td>
-                        <span className={`status-badge ${item.maladie.toLowerCase().includes('sain') ? 'sain' : 'malade'}`}>
+                        <span className={`status-badge ${(item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy')) ? 'sain' : 'malade'}`}>
                           {item.maladie}
                         </span>
                       </td>

@@ -70,7 +70,7 @@ const ResultPage = () => {
     );
   }
 
-  const isSain = result.maladie.toLowerCase().includes('sain');
+  const isSain = result.maladie.toLowerCase().includes('sain') || result.maladie.toLowerCase().includes('healthy');
 
   return (
     <div className="dashboard-page" style={{ paddingTop: '100px' }}>
@@ -160,7 +160,7 @@ const ResultPage = () => {
               <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary)' }}>
                 <CheckCircle size={18} /> Traitement Recommandé
               </h4>
-              <p style={{ lineHeight: '1.6', fontWeight: 500 }}>
+              <p style={{ lineHeight: '1.6', fontWeight: 500, whiteSpace: 'pre-line' }}>
                 {result.traitement || "Consultez la base des maladies pour plus de détails sur le traitement approprié."}
               </p>
             </div>

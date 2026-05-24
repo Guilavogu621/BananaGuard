@@ -33,6 +33,91 @@ def get_model():
                 classes_fr = json.load(f)
     return model, classes_fr
 
+def format_traitement(maladie_info: dict) -> str:
+    parts = []
+    
+    # Description
+    desc = maladie_info.get("description")
+    if desc:
+        parts.append(f"Description : {desc}\n")
+    
+    # Causes possibles
+    causes = maladie_info.get("causes_possibles")
+    if causes:
+        parts.append("Causes possibles :")
+        for cause in causes:
+            parts.append(f"- {cause}")
+        parts.append("")
+        
+    # Symptômes typiques / observés
+    symptomes = maladie_info.get("symptomes_typiques") or maladie_info.get("symptomes_observes")
+    if symptomes:
+        parts.append("Symptômes clés :")
+        for sympt in symptomes:
+            parts.append(f"- {sympt}")
+        parts.append("")
+
+    # Recommandations
+    recommandations = maladie_info.get("recommandations") or maladie_info.get("recommandations_immediates")
+    if recommandations:
+        parts.append("Recommandations :")
+        for rec in recommandations:
+            parts.append(f"- {rec}")
+        parts.append("")
+        
+    # Traitement
+    traitement = maladie_info.get("traitement")
+    if traitement:
+        if isinstance(traitement, str):
+            parts.append(f"Traitement : {traitement}")
+        elif isinstance(traitement, dict):
+            note = traitement.get("note")
+            if note:
+                parts.append(f"Note : {note}\n")
+            
+            # Mesures de contrôle
+            mesures = traitement.get("mesures_controle")
+            if mesures:
+                parts.append("Mesures de contrôle :")
+                for mesure in mesures:
+                    parts.append(f"- {mesure}")
+                parts.append("")
+                
+            # Prévention
+            prevention = traitement.get("prevention")
+            if prevention and isinstance(prevention, dict):
+                titre = prevention.get("titre", "Prévention")
+                parts.append(f"{titre} :")
+                for action in prevention.get("actions", []):
+                    parts.append(f"- {action}")
+                parts.append("")
+                
+            # Curatif
+            curatif = traitement.get("curatif")
+            if curatif and isinstance(curatif, dict):
+                titre = curatif.get("titre", "Curatif")
+                parts.append(f"{titre} :")
+                produits = curatif.get("produits_locaux", [])
+                if produits:
+                    parts.append(f"  Produits locaux : {', '.join(produits)}")
+                mode_emploi = curatif.get("mode_emploi", [])
+                if mode_emploi:
+                    parts.append("  Mode d'emploi :")
+                    for mode in mode_emploi:
+                        parts.append(f"  - {mode}")
+                parts.append("")
+                
+            avertissement = traitement.get("avertissement")
+            if avertissement:
+                parts.append(f"Avertissement : {avertissement}")
+                
+    # Conseil / Conseil IA
+    conseil = maladie_info.get("conseil") or maladie_info.get("conseil_ia_faible")
+    if conseil:
+        parts.append(f"Conseil : {conseil}")
+        
+    return "\n".join(parts).strip()
+
 def preprocess_image(image_bytes: bytes):
     img = Image.open(io.BytesIO(image_bytes))
     if img.mode != "RGB":
@@ -65,15 +150,21 @@ async def analyse_image(
         confidence = float(predictions[0][class_idx])
         
         # 4. Identification de la maladie
-        if isinstance(ia_classes, list):
+        if isinstance(ia_classes, dict) and "classes" in ia_classes:
+            classes_list = ia_classes["classes"]
+            if class_idx < len(classes_list):
+                maladie_info = classes_list[class_idx]
+            else:
+                maladie_info = f"Classe {class_idx}"
+        elif isinstance(ia_classes, list):
             maladie_info = ia_classes[class_idx]
         else:
             maladie_info = ia_classes.get(str(class_idx), f"Classe {class_idx}")
         
-        # Si c'est un dictionnaire, on prend le nom
+        # Si c'est un dictionnaire, on extrait le nom et le traitement formaté
         if isinstance(maladie_info, dict):
-            maladie = maladie_info.get("nom", str(maladie_info))
-            traitement_conseille = maladie_info.get("traitement", "Consultez la base de connaissances.")
+            maladie = maladie_info.get("nom_simple", maladie_info.get("nom", str(maladie_info)))
+            traitement_conseille = format_traitement(maladie_info)
         else:
             maladie = maladie_info
             traitement_conseille = "Analyse effectuée avec succès."

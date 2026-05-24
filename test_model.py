@@ -3,7 +3,7 @@ import json
 import os
 
 def test_model_loading():
-    model_path = "ai_model/model/bananaguard_model.h5"
+    model_path = "ai_model/model/bananaguard_v5_FINAL.h5"
     classes_path = "ai_model/model/bananaguard_classes_fr.json"
     
     print(f"Checking if model exists at {model_path}...")
@@ -28,7 +28,8 @@ def test_model_loading():
     try:
         with open(classes_path, 'r', encoding='utf-8') as f:
             classes = json.load(f)
-        print(f"Classes loaded: {classes}")
+        print("Classes loaded successfully!")
+        print(f"Classes details: {json.dumps(classes, ensure_ascii=True)}")
     except Exception as e:
         print(f"Error loading classes: {e}")
 

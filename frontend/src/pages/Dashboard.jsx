@@ -47,7 +47,7 @@ const Dashboard = () => {
 
         // Calcul des statistiques
         const total = data.length;
-        const sains = data.filter(a => a.maladie.toLowerCase().includes('sain')).length;
+        const sains = data.filter(a => a.maladie.toLowerCase().includes('sain') || a.maladie.toLowerCase().includes('healthy')).length;
         const maladies = total - sains;
         const dernier = total > 0 ? new Date(data[0].date_analyse).toLocaleDateString('fr-FR') : 'Aucun';
 
