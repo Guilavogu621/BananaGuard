@@ -1,18 +1,42 @@
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from app.main import app
+from app.database import Base, get_db
 import io
 from PIL import Image
+import pytest
 
+# Configuration de la base de données de test isolée pour le flow
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
+
+@pytest.fixture(scope="module", autouse=True)
+def setup_database():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
 
 def test_full_flow():
     # 1. Signup
     email = "flow@example.com"
     password = "password123"
-    client.post(
+    signup_response = client.post(
         "/api/auth/signup",
         json={"email": email, "nom_complet": "Flow User", "mot_de_passe": password}
     )
+    assert signup_response.status_code == 201
     
     # 2. Login
     login_response = client.post(
@@ -36,7 +60,6 @@ def test_full_flow():
         files={"file": ("test.jpg", img_byte_arr, "image/jpeg")}
     )
     
-    print(f"Analyse response: {response.json()}")
     assert response.status_code == 200
     data = response.json()
     assert "maladie" in data
@@ -55,9 +78,11 @@ def test_full_flow():
     print("History check passed!")
 
 if __name__ == "__main__":
-    # This won't run directly with pytest, but good for manual execution
+    # Permet l'exécution directe si besoin
+    Base.metadata.create_all(bind=engine)
     try:
         test_full_flow()
-        print("Full flow test passed!")
-    except Exception as e:
-        print(f"Full flow test failed: {e}")
+        print("Full flow test passed successfully!")
+    finally:
+        Base.metadata.drop_all(bind=engine)
+
