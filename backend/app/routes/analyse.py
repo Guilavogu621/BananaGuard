@@ -163,11 +163,13 @@ async def analyse_image(
         
         # Si c'est un dictionnaire, on extrait le nom et le traitement formaté
         if isinstance(maladie_info, dict):
-            maladie = maladie_info.get("nom_simple", maladie_info.get("nom", str(maladie_info)))
-            traitement_conseille = format_traitement(maladie_info)
+            maladie_nom = maladie_info.get("nom_simple", maladie_info.get("nom", str(maladie_info)))
+            traitement_info = format_traitement(maladie_info)
+            class_info = maladie_info
         else:
-            maladie = maladie_info
-            traitement_conseille = "Analyse effectuée avec succès."
+            maladie_nom = maladie_info
+            traitement_info = "Analyse effectuée avec succès."
+            class_info = {"id": str(class_idx), "nom_simple": maladie_info}
 
         # 5. Sauvegarde physique du fichier
         file_extension = os.path.splitext(file.filename)[1]
@@ -182,10 +184,10 @@ async def analyse_image(
         
         nouvelle_analyse = Analyse(
             user_id=current_user.id,
-            maladie=maladie,
+            maladie=maladie_nom,
             confiance=confidence,
             image_url=image_url,
-            traitement=traitement_conseille
+            traitement=traitement_info
         )
         db.add(nouvelle_analyse)
         db.commit()
@@ -193,8 +195,10 @@ async def analyse_image(
 
         return {
             "id": nouvelle_analyse.id,
-            "maladie": maladie,
+            "maladie": maladie_nom,
             "confiance": confidence,
+            "traitement": traitement_info,
+            "details": class_info if isinstance(class_info, dict) else {},
             "date": nouvelle_analyse.date_analyse
         }
 
