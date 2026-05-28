@@ -6,20 +6,20 @@ import api from '../api';
 import './BaseMaladies.css';
 
 const extraInfo = {
-  'Plante saine detectee': {
-    scientific: 'Santé parfaite (Aucun problème)',
+  'Plante saine (En parfaite santé)': {
+    scientific: 'Aucun problème',
     image: 'https://th.bing.com/th/id/OIP.RjkCdCQcOYqNBD2rcc0MkAHaL5?w=115&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
   },
-  'Fusarium detecte — Maladie de Panama': {
-    scientific: 'Infection des racines (Mortelle)',
+  'Fusarium oxysporum (Maladie mortelle des racines)': {
+    scientific: 'Problème de l\'intérieur de la plante',
     image: '/fusarium.jpg'
   },
-  'Deformation foliaire detectee': {
-    scientific: 'Problème de climat, sol ou insectes',
+  'Deformation foliaire (Feuilles tordues ou abîmées)': {
+    scientific: 'Carence, soleil ou insectes',
     image: '/deformation.jpg'
   },
-  'Taches foliaires (champignon)': {
-    scientific: 'Maladie due à l\'humidité (Champignons)',
+  'Taches foliaires (Maladie des taches noires ou jaunes)': {
+    scientific: 'Problème lié à trop d\'eau',
     image: 'https://live.staticflickr.com/1566/25433565174_dd3e08ab87_b.jpg'
   }
 };
