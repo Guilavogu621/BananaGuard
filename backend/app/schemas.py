@@ -1,6 +1,10 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
 class UserCreate(BaseModel):
     nom_complet: str
     email: EmailStr

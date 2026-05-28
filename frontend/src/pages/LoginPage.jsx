@@ -29,8 +29,7 @@ const LoginPage = () => {
       const userRes = await authAPI.getMe();
       localStorage.setItem('user', JSON.stringify(userRes.data));
       
-      navigate('/dashboard');
-      window.location.reload();
+      window.location.href = '/dashboard';
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.detail || 'Email ou mot de passe incorrect.');

@@ -50,7 +50,7 @@ def test_signup_user():
 def test_login_user():
     response = client.post(
         "/api/auth/login",
-        data={"username": "test@pytest.com", "password": "password123"}
+        json={"username": "test@pytest.com", "password": "password123"}
     )
     assert response.status_code == 200
     assert "access_token" in response.json()

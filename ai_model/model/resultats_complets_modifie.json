@@ -1,77 +1,30 @@
 {
-  "version": "1.0",
-  "application": "BananaGuard",
-  "classes": [
-    {
-      "id": "healthy",
-      "code_technique": "healthy",
-      "nom_simple": "Plante saine",
-      "resultat_affiche": "✅ Plante saine détectée",
-      "description": "Aucun symptôme majeur de maladie détecté sur la feuille analysée.",
-      "niveau_gravite": "🟢 Faible",
+  "0": {
+    "classe": "deformation",
+    "resultats": {
+      "titre": "Deformation foliaire detectee",
+      "emoji": "ATTENTION",
+      "gravite": "Variable",
+      "description": "Feuille verte avec dechirures ou deformations. Plusieurs causes possibles.",
+      "symptomes": [
+        "Feuilles vertes dechirees ou fendues",
+        "Croissance anormale",
+        "Nervures deformees"
+      ],
       "recommandations": [
-        "Continuer la surveillance régulière",
-        "Maintenir une bonne irrigation",
-        "Éviter l’excès d’humidité",
-        "Vérifier régulièrement l’apparition de taches ou déformations",
-        "Utiliser des outils agricoles propres"
-      ]
-    },
-    {
-      "id": "fusarium",
-      "code_technique": "fusarium",
-      "nom_simple": "Maladie de Panama (Fusariose)",
-      "resultat_affiche": "⚠ Fusariose détectée (Maladie de Panama)",
-      "description": "Le fusarium est très sérieux chez le bananier.",
-      "symptomes_typiques": [
-        "Jaunissement progressif",
-        "Flétrissement",
-        "Feuilles qui tombent",
-        "Pseudo-tronc parfois brun à l’intérieur"
+        "Verifier la presence d'insectes",
+        "Controler l'humidite du sol",
+        "Ajouter des nutriments equilibres",
+        "Retirer les feuilles tres abimees",
+        "Observer l'evolution"
       ],
-      "niveau_gravite": "🔴 Élevé",
-      "recommandations": [
-        "Isoler immédiatement le plant infecté",
-        "Éviter le déplacement de sol contaminé",
-        "Désinfecter les outils agricoles",
-        "Retirer les plants fortement atteints",
-        "Améliorer le drainage du sol",
-        "Utiliser des variétés résistantes si disponibles"
-      ],
-      "traitement": {
-        "note": "Aucun traitement curatif totalement efficace actuellement.",
-        "mesures_controle": [
-          "Rotation culturale",
-          "Gestion stricte de l’hygiène",
-          "Contrôle de l’eau d’irrigation",
-          "Surveillance des plants voisins"
-        ]
-      }
-    },
-    {
-      "id": "deformation",
-      "code_technique": "deformation",
-      "nom_simple": "Feuille déformée",
-      "resultat_affiche": "⚠ Déformation foliaire détectée",
-      "description": "La feuille présente une croissance anormale ou une déformation visible.",
-      "causes_possibles": [
-        "Stress environnemental",
-        "Carence nutritive",
-        "Infection virale",
-        "Attaque d’insectes",
-        "Excès ou manque d’eau"
-      ],
-      "niveau_gravite": "🟡 Variable",
-      "recommandations": [
-        "Vérifier la présence d’insectes",
-        "Contrôler l’humidité du sol",
-        "Ajouter des nutriments équilibrés",
-        "Retirer les feuilles fortement déformées",
-        "Observer l’évolution sur plusieurs jours"
-      ],
-      "conseil": "Un diagnostic complémentaire peut être nécessaire."
-    },
-    {
+      "traitement": "Causes : stress, carence, insectes ou vent. Traiter selon cause identifiee.",
+      "conseil": "Si persistant, consultez un specialiste."
+    }
+  },
+  "1": {
+    "classe": "fungal_leaf_spot",
+    "resultats": {
       "id": "fungal_leaf_spot",
       "code_technique": "fungal_leaf_spot",
       "nom_simple": "Taches foliaires (champignon)",
@@ -122,5 +75,49 @@
       },
       "conseil_ia_faible": "Si la photo est floue ou la confiance < 60%, reprenez une photo nette en plein jour ou consultez un technicien."
     }
-  ]
+  },
+  "2": {
+    "classe": "fusarium",
+    "resultats": {
+      "titre": "Fusarium detecte — Maladie de Panama",
+      "emoji": "ALERTE",
+      "gravite": "Eleve — Tres serieux",
+      "description": "Fusarium oxysporum detecte. Maladie vasculaire grave qui attaque les racines et bloque la circulation de l'eau.",
+      "symptomes": [
+        "Jaunissement progressif des feuilles",
+        "Fletrissement et affaissement",
+        "Pseudo-tronc brun a l'interieur",
+        "Tiges brulees ou sechees",
+        "Plante entiere affaiblie"
+      ],
+      "recommandations": [
+        "Isoler immediatement le plant infecte",
+        "Eviter le deplacement de sol contamine",
+        "Desinfecter tous les outils agricoles",
+        "Retirer et bruler les plants atteints",
+        "Ameliorer le drainage du sol",
+        "Surveiller les plants voisins"
+      ],
+      "traitement": "Aucun traitement curatif efficace. Mesures : rotation culturale, hygiene stricte, controle irrigation.",
+      "conseil": "Consultez un agronome pour les varietes resistantes disponibles en Guinee."
+    }
+  },
+  "3": {
+    "classe": "healthy",
+    "resultats": {
+      "titre": "Plante saine detectee",
+      "emoji": "OK",
+      "gravite": "Aucune",
+      "description": "Aucun symptome detecte sur la feuille analysee.",
+      "recommandations": [
+        "Continuer la surveillance reguliere",
+        "Maintenir une bonne irrigation",
+        "Eviter l'exces d'humidite",
+        "Verifier l'apparition de taches ou deformations",
+        "Utiliser des outils agricoles propres"
+      ],
+      "traitement": "Aucun traitement necessaire.",
+      "conseil": "Surveillez vos plants regulierement."
+    }
+  }
 }

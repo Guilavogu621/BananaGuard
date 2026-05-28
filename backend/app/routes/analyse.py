@@ -50,7 +50,7 @@ def format_traitement(maladie_info: dict) -> str:
         parts.append("")
         
     # Symptômes typiques / observés
-    symptomes = maladie_info.get("symptomes_typiques") or maladie_info.get("symptomes_observes")
+    symptomes = maladie_info.get("symptomes") or maladie_info.get("symptomes_typiques") or maladie_info.get("symptomes_observes")
     if symptomes:
         parts.append("Symptômes clés :")
         for sympt in symptomes:
@@ -148,8 +148,45 @@ async def analyse_image(
         predictions = ia_model.predict(processed_image)
         class_idx = np.argmax(predictions[0])
         confidence = float(predictions[0][class_idx])
-        
-        # 4. Identification de la maladie
+
+        # 4. Seuil de confiance — en dessous de 70% on ne diagnostique pas
+        SEUIL_CONFIANCE = 0.70
+        if confidence < SEUIL_CONFIANCE:
+            maladie_nom = "Incertain"
+            traitement_info = (
+                f"Diagnostic incertain ({int(confidence * 100)}%). "
+                "Reprenez une photo nette de la feuille seule, de face, en plein jour."
+            )
+            class_info = {"id": "incertain", "nom_simple": maladie_nom}
+
+            # Sauvegarde physique du fichier
+            file_extension = os.path.splitext(file.filename)[1]
+            unique_filename = f"{uuid.uuid4()}{file_extension}"
+            file_path = os.path.join("uploads", unique_filename)
+            with open(file_path, "wb") as buffer:
+                buffer.write(content)
+
+            nouvelle_analyse = Analyse(
+                user_id=current_user.id,
+                maladie=maladie_nom,
+                confiance=confidence,
+                image_url=unique_filename,
+                traitement=traitement_info,
+            )
+            db.add(nouvelle_analyse)
+            db.commit()
+            db.refresh(nouvelle_analyse)
+
+            return {
+                "id": nouvelle_analyse.id,
+                "maladie": maladie_nom,
+                "confiance": confidence,
+                "traitement": traitement_info,
+                "details": class_info,
+                "date": nouvelle_analyse.date_analyse,
+            }
+
+        # 6. Identification de la maladie
         if isinstance(ia_classes, dict) and "classes" in ia_classes:
             classes_list = ia_classes["classes"]
             if class_idx < len(classes_list):
@@ -163,15 +200,17 @@ async def analyse_image(
         
         # Si c'est un dictionnaire, on extrait le nom et le traitement formaté
         if isinstance(maladie_info, dict):
-            maladie_nom = maladie_info.get("nom_simple", maladie_info.get("nom", str(maladie_info)))
-            traitement_info = format_traitement(maladie_info)
+            # Le nouveau JSON a la structure { "classe": "...", "resultats": {...} }
+            resultats = maladie_info.get("resultats", maladie_info)
+            maladie_nom = resultats.get("nom_simple", resultats.get("titre", maladie_info.get("classe", str(maladie_info))))
+            traitement_info = format_traitement(resultats)
             class_info = maladie_info
         else:
             maladie_nom = maladie_info
             traitement_info = "Analyse effectuée avec succès."
             class_info = {"id": str(class_idx), "nom_simple": maladie_info}
 
-        # 5. Sauvegarde physique du fichier
+        # 7. Sauvegarde physique du fichier
         file_extension = os.path.splitext(file.filename)[1]
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         file_path = os.path.join("uploads", unique_filename)
@@ -179,7 +218,7 @@ async def analyse_image(
         with open(file_path, "wb") as buffer:
             buffer.write(content)
 
-        # 6. Enregistrement dans l'historique (nom du fichier seulement)
+        # 8. Enregistrement dans l'historique
         image_url = unique_filename
         
         nouvelle_analyse = Analyse(

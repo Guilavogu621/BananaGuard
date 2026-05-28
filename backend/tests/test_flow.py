@@ -41,7 +41,7 @@ def test_full_flow():
     # 2. Login
     login_response = client.post(
         "/api/auth/login",
-        data={"username": email, "password": password}
+        json={"username": email, "password": password}
     )
     assert login_response.status_code == 200
     token = login_response.json()["access_token"]

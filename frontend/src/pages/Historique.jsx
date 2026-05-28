@@ -69,11 +69,16 @@ const Historique = () => {
   };
 
   // Filtrage des données
+  const maladieLower = (m) => (m || '').toLowerCase();
+  const isSain = (m) => maladieLower(m).includes('sain') || maladieLower(m).includes('healthy');
+  const isIncertain = (m) => m === 'Incertain';
+
   const filteredAnalyses = analyses.filter(item => {
-    const matchesSearch = item.maladie.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = maladieLower(item.maladie).includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'Tous' || 
-                         (filterType === 'Sain' && (item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy'))) ||
-                         (filterType === 'Malade' && !(item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy')));
+                         (filterType === 'Sain' && isSain(item.maladie)) ||
+                         (filterType === 'Malade' && !isSain(item.maladie) && !isIncertain(item.maladie)) ||
+                         (filterType === 'Incertain' && isIncertain(item.maladie));
     return matchesSearch && matchesFilter;
   });
 
@@ -135,15 +140,16 @@ const Historique = () => {
           
           <div className="filter-group" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
             <Filter size={18} style={{ color: 'var(--text-muted)' }} />
-            <select 
-              className="filter-select"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <option value="Tous">Tous les états</option>
-              <option value="Sain">Sain uniquement</option>
-              <option value="Malade">Maladies uniquement</option>
-            </select>
+              <select 
+                className="filter-select"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+              >
+                <option value="Tous">Tous les états</option>
+                <option value="Sain">Sain uniquement</option>
+                <option value="Malade">Maladies uniquement</option>
+                <option value="Incertain">Incertain</option>
+              </select>
           </div>
         </div>
 
@@ -187,9 +193,9 @@ const Historique = () => {
                         </div>
                       </td>
                       <td>
-                        <span className={`status-badge ${(item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy')) ? 'sain' : 'malade'}`}>
-                          {item.maladie}
-                        </span>
+                          <span className={`status-badge ${item.maladie === 'Incertain' ? 'incertain' : (item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy')) ? 'sain' : 'malade'}`}>
+                            {item.maladie}
+                          </span>
                       </td>
                       <td>
                         <div style={{ fontWeight: 700, color: 'var(--primary)' }}>

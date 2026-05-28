@@ -12,7 +12,8 @@ const Navbar = () => {
   const location = useLocation();
   
   const isAuthenticated = !!localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  let user = {};
+  try { user = JSON.parse(localStorage.getItem('user')) || {}; } catch (e) { user = {}; }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,8 +26,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/');
-    window.location.reload();
+    window.location.href = '/';
   };
 
   const handleProfileClick = () => {
@@ -76,7 +76,7 @@ const Navbar = () => {
                 <div className="avatar">
                   <User size={20} />
                 </div>
-                <span className="user-name">{user.nom || 'Utilisateur'}</span>
+                <span className="user-name">{user.nom_complet || user.nom || 'Utilisateur'}</span>
                 <ChevronDown size={16} className={showProfileMenu ? 'rotate' : ''} />
               </button>
 
