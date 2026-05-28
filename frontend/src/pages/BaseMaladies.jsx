@@ -6,20 +6,20 @@ import api from '../api';
 import './BaseMaladies.css';
 
 const extraInfo = {
-  healthy: {
-    scientific: 'Santé Optimale',
+  'Plante saine detectee': {
+    scientific: 'Santé parfaite (Aucun problème)',
     image: 'https://th.bing.com/th/id/OIP.RjkCdCQcOYqNBD2rcc0MkAHaL5?w=115&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
   },
-  fusarium: {
-    scientific: 'Fusarium oxysporum',
-    image: 'https://apps.lucidcentral.org/pppw_v10/images/entities/banana_fusarium_wilt_176/fusarium_wilt_left_daff_queensland.jpg'
+  'Fusarium detecte — Maladie de Panama': {
+    scientific: 'Infection des racines (Mortelle)',
+    image: '/fusarium.jpg'
   },
-  deformation: {
-    scientific: 'Facteurs abiotiques / Stress',
-    image: 'https://th.bing.com/th/id/OIP.bJ06a54f4kQ0q9Hq7-V822wHaFj?w=242&h=182&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
+  'Deformation foliaire detectee': {
+    scientific: 'Problème de climat, sol ou insectes',
+    image: '/deformation.jpg'
   },
-  fungal_leaf_spot: {
-    scientific: 'Mycosphaerella fijiensis / Pestalotiopsis',
+  'Taches foliaires (champignon)': {
+    scientific: 'Maladie due à l\'humidité (Champignons)',
     image: 'https://live.staticflickr.com/1566/25433565174_dd3e08ab87_b.jpg'
   }
 };
@@ -76,12 +76,20 @@ const BaseMaladies = () => {
 
         <div className="maladies-grid-detailed">
           {maladies.map((maladie, index) => {
-            const extra = extraInfo[maladie.id] || {
+            const extra = extraInfo[maladie.id] || extraInfo[maladie.nom_simple] || {
               scientific: 'Inconnu',
               image: 'https://via.placeholder.com/600x400?text=Image+Non+Disponible'
             };
-            const symptoms = maladie.symptomes_typiques || maladie.symptomes_observes || [];
+            const symptoms = maladie.symptomes || maladie.symptomes_typiques || maladie.symptomes_observes || [];
             const recommendations = maladie.recommandations || maladie.recommandations_immediates || [];
+
+            let rawGravite = maladie.niveau_gravite || maladie.gravite || '🟢 Faible';
+            let formattedGravite = rawGravite;
+            if (rawGravite === 'Variable') formattedGravite = '⚪ Variable';
+            if (rawGravite === 'Eleve - Tres serieux' || rawGravite === 'Élevé - Très sérieux') formattedGravite = '🔴 Élevé - Très sérieux';
+            if (rawGravite === 'Eleve' || rawGravite === 'Élevé') formattedGravite = '🔴 Élevé';
+            if (rawGravite === 'Faible') formattedGravite = '🟢 Faible';
+            if (rawGravite === 'Aucune') formattedGravite = '🟢 Aucune';
 
             return (
               <motion.div 
@@ -94,8 +102,8 @@ const BaseMaladies = () => {
               >
                 <div className="card-image">
                   <img src={extra.image} alt={maladie.nom_simple} />
-                  <div className={`severity-tag ${(maladie.niveau_gravite || 'Faible').toLowerCase().replace('🟢', '').replace('🟡', '').replace('🔴', '').replace('🟠', '').trim()}`}>
-                    {maladie.niveau_gravite || '🟢 Faible'}
+                  <div className={`severity-tag ${formattedGravite.toLowerCase().replace('🟢', '').replace('🟡', '').replace('🔴', '').replace('🟠', '').replace('⚪', '').trim().replace(/[^a-z0-9]/g, '-')}`}>
+                    {formattedGravite}
                   </div>
                 </div>
                 <div className="card-content">
