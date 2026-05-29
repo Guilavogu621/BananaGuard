@@ -23,14 +23,9 @@ api.interceptors.request.use((config) => {
 export const authAPI = {
   signup: (userData) => api.post('/auth/signup', userData),
   login: (credentials) => {
-    // Le backend FastAPI attend du x-www-form-urlencoded pour OAuth2PasswordRequestForm
-    const formData = new URLSearchParams();
-    formData.append('username', credentials.email);
-    formData.append('password', credentials.password);
-    return api.post('/auth/login', formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+    return api.post('/auth/login', {
+      username: credentials.email,
+      password: credentials.password,
     });
   },
   getMe: () => api.get('/auth/me'),

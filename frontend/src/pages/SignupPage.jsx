@@ -59,8 +59,7 @@ const SignupPage = () => {
       localStorage.setItem('token', loginResponse.data.access_token);
       localStorage.setItem('user', JSON.stringify(response.data));
       
-      navigate('/dashboard');
-      window.location.reload();
+      window.location.href = '/dashboard';
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.detail || 'Une erreur est survenue lors de l\'inscription.');

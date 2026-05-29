@@ -50,7 +50,7 @@ def test_signup_user():
 def test_login_user():
     response = client.post(
         "/api/auth/login",
-        data={"username": "test@pytest.com", "password": "password123"}
+        json={"username": "test@pytest.com", "password": "password123"}
     )
     assert response.status_code == 200
     assert "access_token" in response.json()
@@ -74,6 +74,8 @@ def test_analyse_image_with_token():
         headers=headers,
         files={"file": ("test.jpg", file, "image/jpeg")}
     )
-
+    
+    # Le test peut renvoyer 200 si le modèle est chargé, 
+    # ou 500 si le chemin du modèle est incorrect dans l'env de test
+    # On vérifie juste qu'on a passé l'étape de l'authentification
     assert response.status_code in [200, 500]
-

@@ -32,13 +32,12 @@ const ResultPage = () => {
 
         // On peut soit récupérer tous les historiques et filtrer, 
         // soit avoir une route dédiée. Ici on simule ou on filtre.
-        const response = await axios.get(`http://${window.location.hostname}:8000/api/historique/`, {
+        const response = await axios.get(`http://${window.location.hostname}:8000/api/historique/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        const item = response.data.find(a => a.id === parseInt(id));
-        if (item) {
-          setResult(item);
+        if (response.data) {
+          setResult(response.data);
         } else {
           console.error("Analyse non trouvée");
         }
@@ -70,7 +69,11 @@ const ResultPage = () => {
     );
   }
 
-  const isSain = result.maladie.toLowerCase().includes('sain');
+  const isIncertain = result.maladie === 'Incertain';
+  const isSain = !isIncertain && (result.maladie.toLowerCase().includes('sain') || result.maladie.toLowerCase().includes('healthy'));
+  const cardBg = isIncertain ? '#fff8e1' : (isSain ? '#f1f8e9' : '#fff3e0');
+  const cardIcon = isIncertain ? 'warning' : (isSain ? 'success' : 'danger');
+  const cardColor = isIncertain ? '#f57f17' : (isSain ? '#2e7d32' : '#e65100');
 
   return (
     <div className="dashboard-page" style={{ paddingTop: '100px' }}>
@@ -92,30 +95,30 @@ const ResultPage = () => {
 
         <div className="dashboard-content" style={{ gridTemplateColumns: '1fr 1.5fr' }}>
           {/* Image & Main Info */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="content-section"
           >
             <div className="result-img-container" style={{ marginBottom: '1.5rem', borderRadius: '12px', overflow: 'hidden' }}>
-              <img 
-                src={result.image_url?.startsWith('http') 
+              <img
+                src={result.image_url?.startsWith('http')
                   ? result.image_url.replace('localhost', window.location.hostname).replace('127.0.0.1', window.location.hostname)
                   : `${IMAGE_BASE_URL}/${result.image_url}`
-                } 
-                alt="Feuille analysée" 
+                }
+                alt="Feuille analysée"
                 style={{ width: '100%', display: 'block' }}
                 onError={(e) => e.target.src = 'https://via.placeholder.com/600x400?text=Image+Non+Trouvée'}
               />
             </div>
-            
-            <div className="stat-card" style={{ background: isSain ? '#f1f8e9' : '#fff3e0', border: 'none' }}>
-              <div className={`stat-icon ${isSain ? 'success' : 'danger'}`}>
-                {isSain ? <CheckCircle size={28} /> : <AlertTriangle size={28} />}
+
+            <div className="stat-card" style={{ background: cardBg, border: 'none' }}>
+              <div className={`stat-icon ${cardIcon}`}>
+                {isIncertain ? <AlertTriangle size={28} /> : isSain ? <CheckCircle size={28} /> : <AlertTriangle size={28} />}
               </div>
               <div className="stat-info">
                 <span className="stat-label">Statut Détecté</span>
-                <span className="stat-value" style={{ color: isSain ? '#2e7d32' : '#e65100' }}>{result.maladie}</span>
+                <span className="stat-value" style={{ color: cardColor }}>{result.maladie}</span>
               </div>
             </div>
 
@@ -131,7 +134,7 @@ const ResultPage = () => {
           </motion.div>
 
           {/* Details & Recommendation */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="content-section"
@@ -148,22 +151,28 @@ const ResultPage = () => {
                 <Info size={18} color="var(--primary)" /> Observations
               </h4>
               <p style={{ lineHeight: '1.6', color: '#4a5568' }}>
-                L'intelligence artificielle a identifié des caractéristiques visuelles correspondant à <strong>{result.maladie}</strong>. 
-                {isSain ? 
-                  " Votre plant ne présente aucun signe pathologique majeur. Continuez l'entretien régulier." : 
-                  " Il est fortement recommandé d'isoler les zones touchées pour éviter la propagation à l'ensemble de la plantation."
-                }
+                {isIncertain ? (
+                  `La confiance du modele (${Math.round(result.confiance * 100)}%) est insuffisante pour un diagnostic fiable.`
+                ) : (
+                  <>L'intelligence artificielle a identifie des caracteristiques visuelles correspondant a <strong>{result.maladie}</strong>.
+                  {isSain ?
+                    " Votre plant ne presente aucun signe pathologique majeur. Continuez l'entretien regulier." :
+                    " Il est fortement recommande d'isoler les zones touchees pour eviter la propagation a l'ensemble de la plantation."
+                  }</>
+                )}
               </p>
             </div>
 
+            {!isIncertain && (
             <div className="info-box" style={{ border: '2px solid var(--primary-light)', padding: '1.5rem', borderRadius: '12px' }}>
               <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary)' }}>
-                <CheckCircle size={18} /> Traitement Recommandé
+                <CheckCircle size={18} /> Traitement Recommande
               </h4>
-              <p style={{ lineHeight: '1.6', fontWeight: 500 }}>
-                {result.traitement || "Consultez la base des maladies pour plus de détails sur le traitement approprié."}
+              <p style={{ lineHeight: '1.6', fontWeight: 500, whiteSpace: 'pre-line' }}>
+                {result.traitement || "Consultez la base des maladies pour plus de details sur le traitement approprie."}
               </p>
             </div>
+            )}
 
             <div style={{ marginTop: '2rem' }}>
               <Link to="/maladies" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center' }}>

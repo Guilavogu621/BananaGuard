@@ -11,8 +11,8 @@ from app.routes.auth import get_current_user
 router = APIRouter(prefix="/api/historique", tags=["historique"])
 
 @router.get("/")
-def get_historique(skip: int = 0, limit: int = 10, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    analyses = db.query(Analyse).filter(Analyse.user_id == current_user.id).offset(skip).limit(limit).all()
+def get_historique(skip: int = 0, limit: int = 100, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    analyses = db.query(Analyse).filter(Analyse.user_id == current_user.id).order_by(Analyse.date_analyse.desc()).offset(skip).limit(limit).all()
     return analyses
 
 @router.get("/export")
@@ -39,6 +39,15 @@ def export_historique_csv(current_user: User = Depends(get_current_user), db: Se
     response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
     response.headers["Content-Disposition"] = f"attachment; filename=historique_bananaguard_{current_user.id}.csv"
     return response
+
+@router.get("/{analyse_id}")
+def get_analyse(analyse_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    analyse = db.query(Analyse).filter(Analyse.id == analyse_id, Analyse.user_id == current_user.id).first()
+    if not analyse:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Analyse non trouvée")
+    return analyse
+
 @router.delete("/{analyse_id}")
 def delete_analyse(analyse_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     analyse = db.query(Analyse).filter(Analyse.id == analyse_id, Analyse.user_id == current_user.id).first()

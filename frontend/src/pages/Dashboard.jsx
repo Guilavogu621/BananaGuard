@@ -27,7 +27,8 @@ const Dashboard = () => {
     dernier: 'Aucun'
   });
   const [recentAnalyses, setRecentAnalyses] = useState([]);
-  const user = JSON.parse(localStorage.getItem('user') || '{"nom_complet": "Utilisateur"}');
+  let user = { nom_complet: 'Utilisateur' };
+  try { user = JSON.parse(localStorage.getItem('user')) || { nom_complet: 'Utilisateur' }; } catch (e) { user = { nom_complet: 'Utilisateur' }; }
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -47,8 +48,9 @@ const Dashboard = () => {
 
         // Calcul des statistiques
         const total = data.length;
-        const sains = data.filter(a => a.maladie.toLowerCase().includes('sain')).length;
-        const maladies = total - sains;
+        const sains = data.filter(a => a.maladie.toLowerCase().includes('sain') || a.maladie.toLowerCase().includes('healthy')).length;
+        const incertains = data.filter(a => a.maladie === 'Incertain').length;
+        const maladies = total - sains - incertains;
         const dernier = total > 0 ? new Date(data[0].date_analyse).toLocaleDateString('fr-FR') : 'Aucun';
 
         setStats({ total, maladies, sains, dernier });

@@ -33,6 +33,91 @@ def get_model():
                 classes_fr = json.load(f)
     return model, classes_fr
 
+def format_traitement(maladie_info: dict) -> str:
+    parts = []
+    
+    # Description
+    desc = maladie_info.get("description")
+    if desc:
+        parts.append(f"Description : {desc}\n")
+    
+    # Causes possibles
+    causes = maladie_info.get("causes_possibles")
+    if causes:
+        parts.append("Causes possibles :")
+        for cause in causes:
+            parts.append(f"- {cause}")
+        parts.append("")
+        
+    # Symptômes typiques / observés
+    symptomes = maladie_info.get("symptomes") or maladie_info.get("symptomes_typiques") or maladie_info.get("symptomes_observes")
+    if symptomes:
+        parts.append("Symptômes clés :")
+        for sympt in symptomes:
+            parts.append(f"- {sympt}")
+        parts.append("")
+
+    # Recommandations
+    recommandations = maladie_info.get("recommandations") or maladie_info.get("recommandations_immediates")
+    if recommandations:
+        parts.append("Recommandations :")
+        for rec in recommandations:
+            parts.append(f"- {rec}")
+        parts.append("")
+        
+    # Traitement
+    traitement = maladie_info.get("traitement")
+    if traitement:
+        if isinstance(traitement, str):
+            parts.append(f"Traitement : {traitement}")
+        elif isinstance(traitement, dict):
+            note = traitement.get("note")
+            if note:
+                parts.append(f"Note : {note}\n")
+            
+            # Mesures de contrôle
+            mesures = traitement.get("mesures_controle")
+            if mesures:
+                parts.append("Mesures de contrôle :")
+                for mesure in mesures:
+                    parts.append(f"- {mesure}")
+                parts.append("")
+                
+            # Prévention
+            prevention = traitement.get("prevention")
+            if prevention and isinstance(prevention, dict):
+                titre = prevention.get("titre", "Prévention")
+                parts.append(f"{titre} :")
+                for action in prevention.get("actions", []):
+                    parts.append(f"- {action}")
+                parts.append("")
+                
+            # Curatif
+            curatif = traitement.get("curatif")
+            if curatif and isinstance(curatif, dict):
+                titre = curatif.get("titre", "Curatif")
+                parts.append(f"{titre} :")
+                produits = curatif.get("produits_locaux", [])
+                if produits:
+                    parts.append(f"  Produits locaux : {', '.join(produits)}")
+                mode_emploi = curatif.get("mode_emploi", [])
+                if mode_emploi:
+                    parts.append("  Mode d'emploi :")
+                    for mode in mode_emploi:
+                        parts.append(f"  - {mode}")
+                parts.append("")
+                
+            avertissement = traitement.get("avertissement")
+            if avertissement:
+                parts.append(f"Avertissement : {avertissement}")
+                
+    # Conseil / Conseil IA
+    conseil = maladie_info.get("conseil") or maladie_info.get("conseil_ia_faible")
+    if conseil:
+        parts.append(f"Conseil : {conseil}")
+        
+    return "\n".join(parts).strip()
+
 def preprocess_image(image_bytes: bytes):
     img = Image.open(io.BytesIO(image_bytes))
     if img.mode != "RGB":
@@ -63,23 +148,69 @@ async def analyse_image(
         predictions = ia_model.predict(processed_image)
         class_idx = np.argmax(predictions[0])
         confidence = float(predictions[0][class_idx])
+
+        # 4. Seuil de confiance — en dessous de 70% on ne diagnostique pas
+        SEUIL_CONFIANCE = 0.70
+        if confidence < SEUIL_CONFIANCE:
+            maladie_nom = "Incertain"
+            traitement_info = (
+                f"Diagnostic incertain ({int(confidence * 100)}%). "
+                "Reprenez une photo nette de la feuille seule, de face, en plein jour."
+            )
+            class_info = {"id": "incertain", "nom_simple": maladie_nom}
+
+            # Sauvegarde physique du fichier
+            file_extension = os.path.splitext(file.filename)[1]
+            unique_filename = f"{uuid.uuid4()}{file_extension}"
+            file_path = os.path.join("uploads", unique_filename)
+            with open(file_path, "wb") as buffer:
+                buffer.write(content)
+
+            nouvelle_analyse = Analyse(
+                user_id=current_user.id,
+                maladie=maladie_nom,
+                confiance=confidence,
+                image_url=unique_filename,
+                traitement=traitement_info,
+            )
+            db.add(nouvelle_analyse)
+            db.commit()
+            db.refresh(nouvelle_analyse)
+
+            return {
+                "id": nouvelle_analyse.id,
+                "maladie": maladie_nom,
+                "confiance": confidence,
+                "traitement": traitement_info,
+                "details": class_info,
+                "date": nouvelle_analyse.date_analyse,
+            }
+
+        # 6. Identification de la maladie
+        if isinstance(ia_classes, dict) and "classes" in ia_classes:
+            classes_list = ia_classes["classes"]
+            if class_idx < len(classes_list):
+                maladie_info = classes_list[class_idx]
+            else:
+                maladie_info = f"Classe {class_idx}"
+        elif isinstance(ia_classes, list):
+            maladie_info = ia_classes[class_idx]
+        else:
+            maladie_info = ia_classes.get(str(class_idx), f"Classe {class_idx}")
         
-        # 4. Identification de la maladie
-        if isinstance(ia_classes, list):
-            class_info = ia_classes[class_idx]
+        # Si c'est un dictionnaire, on extrait le nom et le traitement formaté
+        if isinstance(maladie_info, dict):
+            # Le nouveau JSON a la structure { "classe": "...", "resultats": {...} }
+            resultats = maladie_info.get("resultats", maladie_info)
+            maladie_nom = resultats.get("nom_simple", resultats.get("titre", maladie_info.get("classe", str(maladie_info))))
+            traitement_info = format_traitement(resultats)
+            class_info = maladie_info
         else:
-            class_info = ia_classes.get(str(class_idx), ia_classes.get(class_idx, {}))
+            maladie_nom = maladie_info
+            traitement_info = "Analyse effectuée avec succès."
+            class_info = {"id": str(class_idx), "nom_simple": maladie_info}
 
-        if isinstance(class_info, dict):
-            maladie_nom = class_info.get("nom", f"Classe {class_idx}")
-            traitement = class_info.get("traitement", "Consultez la base de connaissances.")
-            details = class_info
-        else:
-            maladie_nom = str(class_info) if class_info else f"Classe {class_idx}"
-            traitement = "Consultez la base de connaissances."
-            details = {}
-
-        # 5. Sauvegarde physique du fichier
+        # 7. Sauvegarde physique du fichier
         file_extension = os.path.splitext(file.filename)[1]
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         file_path = os.path.join("uploads", unique_filename)
@@ -87,7 +218,7 @@ async def analyse_image(
         with open(file_path, "wb") as buffer:
             buffer.write(content)
 
-        # 6. Enregistrement dans l'historique (nom du fichier seulement)
+        # 8. Enregistrement dans l'historique
         image_url = unique_filename
         
         nouvelle_analyse = Analyse(
@@ -95,7 +226,7 @@ async def analyse_image(
             maladie=maladie_nom,
             confiance=confidence,
             image_url=image_url,
-            traitement=traitement
+            traitement=traitement_info
         )
         db.add(nouvelle_analyse)
         db.commit()
@@ -105,8 +236,8 @@ async def analyse_image(
             "id": nouvelle_analyse.id,
             "maladie": maladie_nom,
             "confiance": confidence,
-            "traitement": traitement,
-            "details": details,
+            "traitement": traitement_info,
+            "details": class_info,
             "date": nouvelle_analyse.date_analyse
         }
 

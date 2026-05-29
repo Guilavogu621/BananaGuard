@@ -125,6 +125,11 @@
   color: #ef6c00;
 }
 
+.status-badge.incertain {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
 .actions-cell {
   display: flex;
   gap: 0.5rem;

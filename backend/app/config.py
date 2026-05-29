@@ -6,8 +6,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 1440
     database_url: str = "sqlite:///./bananaguard.db"
-    model_path: str = "../ai_model/model/bananaguard_model.h5"
-    classes_path: str = "../ai_model/model/bananaguard_classes_fr.json"
+    model_path: str = "../ai_model/model/bananaguard_best.h5"
+    classes_path: str = "../ai_model/model/resultats_complets_modifie.json"
 
     class Config:
         env_file = ".env"
