@@ -39,7 +39,7 @@ const Dashboard = () => {
           return;
         }
 
-        const response = await axios.get(`http://${window.location.hostname}:8000/api/historique/`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/historique/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -145,7 +145,7 @@ const Dashboard = () => {
                   >
                     <img 
                       src={analysis.image_url?.startsWith('http') 
-                        ? analysis.image_url.replace('localhost', window.location.hostname).replace('127.0.0.1', window.location.hostname)
+                        ? `${import.meta.env.VITE_BASE_URL}/uploads/${analysis.image_url}`
                         : `${IMAGE_BASE_URL}/${analysis.image_url}`
                       } 
                       alt="Analyse" 
