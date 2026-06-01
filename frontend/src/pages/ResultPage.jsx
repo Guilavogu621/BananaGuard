@@ -32,7 +32,7 @@ const ResultPage = () => {
 
         // On peut soit récupérer tous les historiques et filtrer, 
         // soit avoir une route dédiée. Ici on simule ou on filtre.
-        const response = await axios.get(`http://${window.location.hostname}:8000/api/historique/${id}`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/historique/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -103,7 +103,7 @@ const ResultPage = () => {
             <div className="result-img-container" style={{ marginBottom: '1.5rem', borderRadius: '12px', overflow: 'hidden' }}>
               <img
                 src={result.image_url?.startsWith('http')
-                  ? result.image_url.replace('localhost', window.location.hostname).replace('127.0.0.1', window.location.hostname)
+                  ? `${import.meta.env.VITE_BASE_URL}/uploads/${result.image_url}`
                   : `${IMAGE_BASE_URL}/${result.image_url}`
                 }
                 alt="Feuille analysée"

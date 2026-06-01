@@ -33,7 +33,7 @@ const Historique = () => {
           return;
         }
 
-        const response = await axios.get(`http://${window.location.hostname}:8000/api/historique/`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/historique/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -51,7 +51,7 @@ const Historique = () => {
   const handleExportCSV = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://${window.location.hostname}:8000/api/historique/export`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/historique/export`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob'
       });
@@ -87,7 +87,7 @@ const Historique = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://${window.location.hostname}:8000/api/historique/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/historique/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -173,7 +173,7 @@ const Historique = () => {
                         <div style={{ width: '50px', height: '50px', minWidth: '50px', overflow: 'hidden', borderRadius: '8px', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <img 
                             src={item.image_url?.startsWith('http') 
-                              ? item.image_url.replace('localhost', window.location.hostname).replace('127.0.0.1', window.location.hostname)
+                              ? `${import.meta.env.VITE_BASE_URL}/uploads/${item.image_url}`
                               : `${IMAGE_BASE_URL}/${item.image_url}`
                             } 
                             alt="Analyse" 
