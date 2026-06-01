@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Image as ImageIcon, X, Loader2, ShieldCheck, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import api from '../api/index';
 import './UploadPage.css';
 
 const UploadPage = () => {
@@ -43,11 +43,9 @@ const UploadPage = () => {
     formData.append('file', selectedFile);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/analyse/`, formData, {
+      const response = await api.post('/analyse/', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
         }
       });
 
