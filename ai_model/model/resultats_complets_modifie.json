@@ -2,7 +2,7 @@
   "0": {
     "classe": "deformation",
     "resultats": {
-      "titre": "Deformation foliaire (Feuilles tordues ou abîmées)",
+      "titre": "Feuilles tordues, déchirées ou abîmées (Déformation physique ou carence)",
       "emoji": "ATTENTION",
       "gravite": "Variable",
       "description": "Les feuilles vertes présentent des déchirures, des torsions ou des formes bizarres. Cela n'est pas forcément une maladie grave, mais souvent un problème de climat (trop de vent), un manque d'eau, ou des petites bêtes qui grignotent la plante.",
@@ -27,8 +27,8 @@
     "resultats": {
       "id": "fungal_leaf_spot",
       "code_technique": "fungal_leaf_spot",
-      "nom_simple": "Taches foliaires (Maladie des taches noires ou jaunes)",
-      "resultat_affiche": "⚠ Maladie des taches sur les feuilles détectée",
+      "nom_simple": "Maladie des Taches Noires sur les feuilles (Sigatoka noire)",
+      "resultat_affiche": "⚠ Maladie des Taches Noires sur les feuilles détectée",
       "description": "C'est une maladie très courante causée par l'humidité. De minuscules champignons invisibles à l'œil nu attaquent les feuilles. Cela empêche la plante de prendre la lumière du soleil pour se nourrir, ce qui donne au final des régimes de bananes beaucoup plus petits.",
       "symptomes_observes": [
         "Apparition de petits points noirs ou marrons qui grossissent",
@@ -76,7 +76,7 @@
   "2": {
     "classe": "fusarium",
     "resultats": {
-      "titre": "Fusarium oxysporum (Maladie mortelle des racines)",
+      "titre": "Pourriture et dessèchement mortel du bananier (Maladie de Panama - Fusarium oxysporum)",
       "emoji": "ALERTE",
       "gravite": "🔴 Élevé - Très sérieux",
       "description": "C'est une maladie très grave appelée 'Maladie de Panama'. Un microbe vit dans la terre, attaque les racines du bananier et bouche complètement les tuyaux à l'intérieur de la plante. La plante ne peut plus boire d'eau et meurt de soif même s'il pleut beaucoup.",
@@ -100,7 +100,7 @@
   "3": {
     "classe": "healthy",
     "resultats": {
-      "titre": "Plante saine (En parfaite santé)",
+      "titre": "Plante en bonne santé (Aucune maladie détectée)",
       "emoji": "OK",
       "gravite": "🟢 Aucune",
       "description": "Excellente nouvelle ! Cette feuille est en très bonne santé. Il n'y a aucun signe de maladie, de champignon ou de problème grave.",

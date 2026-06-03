@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Shield, User, LogOut, Menu, X, ChevronDown } from 'lucide-react';
+import { Shield, User, LogOut, Menu, X, ChevronDown, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Navbar.css';
 
@@ -8,6 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -20,8 +21,30 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
   }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      alert("Installation PWA :\n\n- Sur Chrome/Android : Menu ⋮ > 'Ajouter à l'écran d'accueil'\n- Sur Safari/iOS : Partager > 'Sur l'écran d'accueil'\n- Sur Ordinateur : Icône d'installation dans la barre d'adresse.\n\n(L'installation automatique s'activera quand le site sera en production).");
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -66,6 +89,10 @@ const Navbar = () => {
               {link.name}
             </Link>
           ))}
+
+          <button onClick={handleInstallClick} className="btn btn-outline" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem', minHeight: 'auto', gap: '0.35rem' }}>
+            <Download size={16} /> Installer l'App
+          </button>
 
           {isAuthenticated ? (
             <div className="profile-wrapper">
@@ -113,16 +140,24 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu & Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="nav-mobile-menu"
-          >
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mobile-overlay"
+              onClick={() => setIsOpen(false)}
+            />
+            <motion.div 
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="nav-mobile-menu"
+            >
             <div className="mobile-menu-links">
               {navLinks.map((link) => (
                 <Link 
@@ -135,6 +170,14 @@ const Navbar = () => {
                 </Link>
               ))}
               
+              <button 
+                onClick={() => { handleInstallClick(); setIsOpen(false); }} 
+                className="btn btn-outline w-full" 
+                style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
+              >
+                <Download size={18} /> Installer l'Application
+              </button>
+
               {!isAuthenticated && (
                 <div className="mobile-auth">
                   <Link to="/login" onClick={() => setIsOpen(false)} className="mobile-link">Connexion</Link>
@@ -150,6 +193,7 @@ const Navbar = () => {
               )}
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>

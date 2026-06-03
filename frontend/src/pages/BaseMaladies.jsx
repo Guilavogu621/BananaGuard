@@ -6,19 +6,19 @@ import api from '../api';
 import './BaseMaladies.css';
 
 const extraInfo = {
-  'Plante saine (En parfaite santé)': {
+  'Plante en bonne santé (Aucune maladie détectée)': {
     scientific: 'Aucun problème',
     image: 'https://th.bing.com/th/id/OIP.RjkCdCQcOYqNBD2rcc0MkAHaL5?w=115&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
   },
-  'Fusarium oxysporum (Maladie mortelle des racines)': {
+  'Pourriture et dessèchement mortel du bananier (Maladie de Panama - Fusarium oxysporum)': {
     scientific: 'Problème de l\'intérieur de la plante',
     image: '/fusarium.jpg'
   },
-  'Deformation foliaire (Feuilles tordues ou abîmées)': {
+  'Feuilles tordues, déchirées ou abîmées (Déformation physique ou carence)': {
     scientific: 'Carence, soleil ou insectes',
     image: '/deformation.jpg'
   },
-  'Taches foliaires (Maladie des taches noires ou jaunes)': {
+  'Maladie des Taches Noires sur les feuilles (Sigatoka noire)': {
     scientific: 'Problème lié à trop d\'eau',
     image: 'https://live.staticflickr.com/1566/25433565174_dd3e08ab87_b.jpg'
   }

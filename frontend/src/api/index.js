@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
-const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8001';
 
 export const IMAGE_BASE_URL = `${BASE_URL}/uploads`;
 

@@ -68,10 +68,10 @@ const LandingPage = () => {
               </div>
               <div className="viz-content">
                 <div className="scan-line"></div>
-                <img src="https://images.unsplash.com/photo-1528510138833-93881313e24d?auto=format&fit=crop&q=80&w=400" alt="Feuille de bananier" />
+                <img src="/fusarium.jpg" alt="Feuille de bananier avec symptômes" />
               </div>
               <div className="viz-result-phrase">
-                <p><strong>Résultat :</strong> Sigatoka noire détectée</p>
+                <p><strong>Résultat :</strong> Pourriture du pied (Panama)</p>
                 <p><strong>Fiabilité :</strong> Très élevée (98%)</p>
               </div>
             </div>
@@ -128,16 +128,16 @@ const LandingPage = () => {
           <h2 className="section-title">Maladies reconnues</h2>
           <div className="maladie-grid">
             {[
-              { name: "Sigatoka noire", color: "#d32f2f", info: "Taches noires sur les feuilles" },
-              { name: "Maladie de Panama", color: "#f57c00", info: "Jaunissement des bords" },
-              { name: "Pestalotiopsis", color: "#fbc02d", info: "Taches grises et sèches" },
-              { name: "Plante Saine", color: "#388e3c", info: "Pas de maladie détectée" }
+              { name: "Taches Noires (Sigatoka)", color: "#d32f2f" },
+              { name: "Pourriture du pied (Panama)", color: "#f57c00" },
+              { name: "Déformation ou carence", color: "#fbc02d" },
+              { name: "Plante en bonne santé", color: "#388e3c" }
             ].map((item, index) => (
-              <div key={index} className="maladie-item glass-card">
+              <Link to="/maladies" key={index} className="maladie-item glass-card" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="indicator" style={{ background: item.color }}></div>
                 <h4>{item.name}</h4>
                 <ChevronRight size={20} className="arrow" />
-              </div>
+              </Link>
             ))}
           </div>
         </div>
