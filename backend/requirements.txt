@@ -13,3 +13,5 @@ tensorflow-cpu
 pillow
 pytest
 httpx
+psycopg2-binary
+psycopg2-binary
