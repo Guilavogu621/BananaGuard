@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: bananaguard-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./bananaguard.db
+      - key: SECRET_KEY
+        value: supersecretkey123
+      - key: MODEL_PATH
+        value: ../ai_model/model/bananaguard_best.h5
+      - key: CLASSES_PATH
+        value: ../ai_model/model/resultats_complets_modifie.json

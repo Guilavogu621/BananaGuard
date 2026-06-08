@@ -1,0 +1,117 @@
+{
+  "0": {
+    "classe": "deformation",
+    "resultats": {
+      "titre": "Feuilles tordues, déchirées ou abîmées (Déformation physique ou carence)",
+      "emoji": "ATTENTION",
+      "gravite": "Variable",
+      "description": "Les feuilles vertes présentent des déchirures, des torsions ou des formes bizarres. Cela n'est pas forcément une maladie grave, mais souvent un problème de climat (trop de vent), un manque d'eau, ou des petites bêtes qui grignotent la plante.",
+      "symptomes": [
+        "Feuilles déchirées ou fendues anormalement",
+        "La plante pousse de travers ou semble bloquée",
+        "Les lignes de la feuille (nervures) sont tordues"
+      ],
+      "recommandations": [
+        "Vérifier s'il y a des petits insectes cachés sous les feuilles",
+        "Vérifier si la terre est trop sèche ou si au contraire l'eau stagne",
+        "Donner un peu d'engrais naturel ou de fumier pour aider la plante",
+        "Couper les feuilles qui sont vraiment trop abîmées",
+        "Surveiller si les nouvelles petites feuilles poussent normalement"
+      ],
+      "traitement": "Si vous trouvez des insectes, utilisez un insecticide naturel (comme de l'eau savonneuse ou du purin). Si c'est à cause du vent ou du manque d'eau, arrosez régulièrement et protégez vos bananiers.",
+      "conseil": "Si le problème continue sur les nouvelles feuilles, demandez l'avis d'un conseiller agricole."
+    }
+  },
+  "1": {
+    "classe": "fungal_leaf_spot",
+    "resultats": {
+      "id": "fungal_leaf_spot",
+      "code_technique": "fungal_leaf_spot",
+      "nom_simple": "Maladie des Taches Noires sur les feuilles (Sigatoka noire)",
+      "resultat_affiche": "⚠ Maladie des Taches Noires sur les feuilles détectée",
+      "description": "C'est une maladie très courante causée par l'humidité. De minuscules champignons invisibles à l'œil nu attaquent les feuilles. Cela empêche la plante de prendre la lumière du soleil pour se nourrir, ce qui donne au final des régimes de bananes beaucoup plus petits.",
+      "symptomes_observes": [
+        "Apparition de petits points noirs ou marrons qui grossissent",
+        "Taches mortes (sèches) entourées d'un cercle jaune",
+        "La feuille devient complètement jaune petit à petit",
+        "Les taches se rejoignent et toute la feuille devient sèche",
+        "La maladie se répand très vite d'un bananier à l'autre quand il pleut beaucoup"
+      ],
+      "niveau_gravite": "🟠 Modéré à élevé",
+      "recommandations_immediates": [
+        "Couper avec un outil propre et brûler loin du champ les feuilles très malades (ne surtout pas les laisser pourrir par terre)",
+        "Arroser uniquement la terre (le pied du bananier), jamais les feuilles",
+        "Arroser très tôt le matin pour que les feuilles puissent sécher la journée",
+        "Arracher les mauvaises herbes autour du bananier pour laisser le vent circuler",
+        "Surveiller les nouvelles pousses tous les 3 jours"
+      ],
+      "traitement": {
+        "prevention": {
+          "titre": "Les bons gestes à faire (Prévention et hygiène)",
+          "actions": [
+            "Nettoyer très souvent les feuilles mortes ou malades",
+            "Laver vos coupe-coupes (machettes) avec un peu d'eau de javel avant de tailler un autre bananier",
+            "Creuser des petits canaux pour éviter que l'eau de pluie fasse des flaques",
+            "Laisser de l'espace entre vos bananiers pour que l'air circule"
+          ]
+        },
+        "curatif": {
+          "titre": "Que faire si la plante est très malade (Traitement)",
+          "produits_locaux": [
+            "Produits vendus au marché pour tuer les champignons (demander un fongicide)",
+            "Bouillie bordelaise (un produit bleu très connu)"
+          ],
+          "mode_emploi": [
+            "Pulvériser le produit tôt le matin ou en fin de journée (jamais sous le soleil chaud)",
+            "Respecter exactement la dose indiquée sur la bouteille",
+            "Porter des gants et se couvrir le nez et la bouche",
+            "Ne pas pulvériser s'il va pleuvoir dans les heures qui suivent"
+          ]
+        },
+        "avertissement": "Demandez toujours conseil à un vendeur de produits agricoles. Un mauvais mélange peut brûler et tuer complètement votre bananier."
+      },
+      "conseil_ia_faible": "Si la photo n'est pas claire, reprenez une bonne photo en plein jour."
+    }
+  },
+  "2": {
+    "classe": "fusarium",
+    "resultats": {
+      "titre": "Pourriture et dessèchement mortel du bananier (Maladie de Panama - Fusarium oxysporum)",
+      "emoji": "ALERTE",
+      "gravite": "🔴 Élevé - Très sérieux",
+      "description": "C'est une maladie très grave appelée 'Maladie de Panama'. Un microbe vit dans la terre, attaque les racines du bananier et bouche complètement les tuyaux à l'intérieur de la plante. La plante ne peut plus boire d'eau et meurt de soif même s'il pleut beaucoup.",
+      "symptomes": [
+        "Les feuilles deviennent toutes jaunes les unes après les autres",
+        "Les feuilles tombent et pendent le long du tronc comme un vieux parapluie",
+        "Quand on coupe le tronc, l'intérieur est marron ou noir au lieu d'être blanc et propre",
+        "La plante entière a l'air très fatiguée et finit par sécher"
+      ],
+      "recommandations": [
+        "Ne plus toucher à cette plante pour ne pas mettre le microbe sur les autres bananiers",
+        "Ne surtout pas transporter la terre d'ici vers un autre endroit",
+        "Laver immédiatement tous vos outils (pelles, machettes, bottes) avec de l'eau de javel",
+        "Arracher complètement et brûler la plante malade et ses racines",
+        "Ne plus jamais planter de bananier à cet endroit précis pendant très longtemps"
+      ],
+      "traitement": "Il n'existe aucun médicament pour guérir cette maladie. La seule solution est d'arracher, brûler, et la prochaine fois, utiliser des bébés bananiers (rejets) d'une variété qui résiste naturellement à cette maladie.",
+      "conseil": "Demandez à votre service agricole local quelles sont les variétés qui résistent."
+    }
+  },
+  "3": {
+    "classe": "healthy",
+    "resultats": {
+      "titre": "Plante en bonne santé (Aucune maladie détectée)",
+      "emoji": "OK",
+      "gravite": "🟢 Aucune",
+      "description": "Excellente nouvelle ! Cette feuille est en très bonne santé. Il n'y a aucun signe de maladie, de champignon ou de problème grave.",
+      "recommandations": [
+        "Continuez à bien surveiller votre champ",
+        "Donnez juste ce qu'il faut d'eau sans inonder la terre",
+        "Vérifiez de temps en temps sous les feuilles si des bêtes ne s'y cachent pas",
+        "Gardez toujours vos outils de coupe bien propres"
+      ],
+      "traitement": "Pas besoin de traitement. Continuez votre bon travail d'entretien !",
+      "conseil": "La prévention (garder le champ propre) reste la meilleure des médecines pour vos bananiers."
+    }
+  }
+}
