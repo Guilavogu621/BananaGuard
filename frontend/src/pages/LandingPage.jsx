@@ -14,6 +14,7 @@ import {
 import './LandingPage.css';
 
 const LandingPage = () => {
+  const isAuthenticated = !!localStorage.getItem('token');
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -45,9 +46,15 @@ const LandingPage = () => {
               Prenez une photo et obtenez immédiatement un diagnostic pour sauver vos récoltes.
             </p>
             <div className="hero-btns">
-              <Link to="/signup" className="btn btn-primary">
-                Commencer maintenant <ArrowRight size={20} />
-              </Link>
+              {isAuthenticated ? (
+                <Link to="/dashboard" className="btn btn-primary">
+                  Aller au Tableau de bord <ArrowRight size={20} />
+                </Link>
+              ) : (
+                <Link to="/signup" className="btn btn-primary">
+                  Commencer maintenant <ArrowRight size={20} />
+                </Link>
+              )}
               <Link to="/maladies" className="btn btn-outline">
                 Voir les maladies
               </Link>
@@ -174,9 +181,19 @@ const LandingPage = () => {
       <section className="cta-final">
         <div className="container">
           <div className="cta-card glass-card">
-            <h2>Prêt à protéger votre plantation ?</h2>
-            <p>Rejoignez les agriculteurs qui utilisent BananaGuard dès aujourd'hui.</p>
-            <Link to="/signup" className="btn btn-primary">Créer mon compte gratuit</Link>
+            {isAuthenticated ? (
+              <>
+                <h2>Analyser une nouvelle feuille ?</h2>
+                <p>Accédez à votre tableau de bord pour diagnostiquer vos bananiers.</p>
+                <Link to="/dashboard" className="btn btn-primary">Aller au Tableau de bord</Link>
+              </>
+            ) : (
+              <>
+                <h2>Prêt à protéger votre plantation ?</h2>
+                <p>Rejoignez les agriculteurs qui utilisent BananaGuard dès aujourd'hui.</p>
+                <Link to="/signup" className="btn btn-primary">Créer mon compte gratuit</Link>
+              </>
+            )}
           </div>
         </div>
       </section>

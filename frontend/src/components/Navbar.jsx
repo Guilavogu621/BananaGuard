@@ -53,8 +53,7 @@ const Navbar = () => {
   };
 
   const handleProfileClick = () => {
-    // Redirection vers la landing page comme demandé
-    navigate('/');
+    navigate('/profile');
     setShowProfileMenu(false);
   };
 
