@@ -30,6 +30,7 @@ export const authAPI = {
     });
   },
   getMe: () => api.get('/auth/me'),
+  updateProfile: (profileData) => api.put('/auth/profil', profileData),
 };
 
 export default api;

@@ -48,7 +48,7 @@ const BaseMaladies = () => {
     return (
       <div className="loading-screen">
         <Loader2 className="spinner" size={48} />
-        <p>Chargement de la base de connaissances...</p>
+        <p>Chargement de la base de connaissances....</p>
       </div>
     );
   }
@@ -92,7 +92,7 @@ const BaseMaladies = () => {
             if (rawGravite === 'Aucune') formattedGravite = '🟢 Aucune';
 
             return (
-              <motion.div 
+              <motion.div
                 key={maladie.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +111,7 @@ const BaseMaladies = () => {
                     <h3>{maladie.nom_simple}</h3>
                     <span className="scientific-name">{extra.scientific}</span>
                   </div>
-                  
+
                   <div className="info-section">
                     <h4><Info size={16} /> Description</h4>
                     <p>{maladie.description}</p>
@@ -125,7 +125,7 @@ const BaseMaladies = () => {
                       </ul>
                     </div>
                   )}
-                  
+
                   {symptoms.length > 0 && (
                     <div className="info-section">
                       <h4><AlertTriangle size={16} /> Symptômes clés</h4>
