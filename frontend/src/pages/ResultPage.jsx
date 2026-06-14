@@ -108,7 +108,7 @@ const ResultPage = () => {
                 }
                 alt="Feuille analysée"
                 style={{ width: '100%', display: 'block' }}
-                onError={(e) => e.target.src = 'https://via.placeholder.com/600x400?text=Image+Non+Trouvée'}
+                onError={(e) => e.target.src = '/favicon.svg'}
               />
             </div>
 

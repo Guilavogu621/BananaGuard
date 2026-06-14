@@ -189,7 +189,7 @@ const Dashboard = () => {
                         } 
                         alt="Analyse" 
                         className="analysis-img" 
-                        onError={(e) => e.target.src = 'https://via.placeholder.com/100x100?text=Banana'}
+                        onError={(e) => e.target.src = '/favicon.svg'}
                       />
                       <div className="analysis-info">
                         <h4>{analysis.maladie}</h4>
@@ -322,7 +322,7 @@ const Dashboard = () => {
                       } 
                       alt="Analyse" 
                       className="analysis-img" 
-                      onError={(e) => e.target.src = 'https://via.placeholder.com/100x100?text=Banana'}
+                      onError={(e) => e.target.src = '/favicon.svg'}
                     />
                     <div className="analysis-info">
                       <h4>{analysis.maladie}</h4>
