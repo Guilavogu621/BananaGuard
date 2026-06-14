@@ -50,8 +50,8 @@ const Dashboard = () => {
 
         if (user.role === 'technicien') {
           const [statsRes, analysesRes] = await Promise.all([
-            axios.get(`${import.meta.env.VITE_API_URL}/admin/statistiques`, { headers: { Authorization: `Bearer ${token}` } }),
-            axios.get(`${import.meta.env.VITE_API_URL}/historique/`, { headers: { Authorization: `Bearer ${token}` } })
+            api.get(`/admin/statistiques`,
+            api.get(`/historique/`
           ]);
           setRecentAnalyses(analysesRes.data.slice(0, 5));
           setStats({
@@ -60,7 +60,7 @@ const Dashboard = () => {
             maladiesDetectees: statsRes.data.maladies_par_region,
           });
         } else {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/historique/`, {
+          const response = await api.get(`/historique/`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
