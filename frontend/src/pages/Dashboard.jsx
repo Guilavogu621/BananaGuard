@@ -14,8 +14,7 @@ import {
   Users
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
-import { IMAGE_BASE_URL } from '../api';
+import api, { IMAGE_BASE_URL } from '../api';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -27,9 +26,18 @@ const Dashboard = () => {
     sains: 0,
     dernier: 'Aucun'
   });
-  const [recentAnalyses, setRecentAnalyses] = useState([]);
+  const [techForm, setTechForm] = useState({ nom_complet: '', email: '', mot_de_passe: '', region: 'Toutes' });
+  const [techFormStatus, setTechFormStatus] = useState({ loading: false, error: null, success: null });
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   let user = { nom_complet: 'Utilisateur' };
   try { user = JSON.parse(localStorage.getItem('user')) || { nom_complet: 'Utilisateur' }; } catch (e) { user = { nom_complet: 'Utilisateur' }; }
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -77,7 +85,19 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [navigate]);
+  }, [navigate, user.role]);
+
+  const handleCreateTech = async (e) => {
+    e.preventDefault();
+    setTechFormStatus({ loading: true, error: null, success: null });
+    try {
+      await api.post('/admin/creer-technicien', techForm);
+      setTechFormStatus({ loading: false, error: null, success: 'Technicien créé avec succès !' });
+      setTechForm({ nom_complet: '', email: '', mot_de_passe: '', region: 'Toutes' });
+    } catch (err) {
+      setTechFormStatus({ loading: false, error: err.response?.data?.detail || 'Erreur lors de la création', success: null });
+    }
+  };
 
   if (loading) {
     return (
@@ -146,11 +166,11 @@ const Dashboard = () => {
             </motion.div>
           </div>
 
-          <div className="dashboard-content">
-            <section className="content-section" style={{ width: '100%' }}>
+          <div className="dashboard-content" style={{ gridTemplateColumns: isMobile ? '1fr' : undefined }}>
+            <section className="content-section">
               <div className="section-head">
                 <h2>Dernières Analyses (Tous Agriculteurs)</h2>
-                <Link to="/historique" className="btn-text">Voir tout l'historique <ChevronRight size={16} /></Link>
+                <Link to="/historique" className="btn-text">Voir tout <ChevronRight size={16} /></Link>
               </div>
               
               <div className="recent-list">
@@ -189,6 +209,38 @@ const Dashboard = () => {
                 )}
               </div>
             </section>
+
+            <aside className="dashboard-sidebar">
+              <section className="content-section">
+                <div className="section-head">
+                  <h2>Créer un technicien</h2>
+                </div>
+                <form onSubmit={handleCreateTech} className="tech-form">
+                  {techFormStatus.error && <div className="alert alert-danger" style={{ marginBottom: '1rem', color: '#e53935' }}>{techFormStatus.error}</div>}
+                  {techFormStatus.success && <div className="alert alert-success" style={{ marginBottom: '1rem', color: '#43a047' }}>{techFormStatus.success}</div>}
+                  
+                  <div className="form-group" style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Nom complet</label>
+                    <input type="text" value={techForm.nom_complet} onChange={e => setTechForm({...techForm, nom_complet: e.target.value})} required className="form-control" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text)' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Email</label>
+                    <input type="email" value={techForm.email} onChange={e => setTechForm({...techForm, email: e.target.value})} required className="form-control" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text)' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Mot de passe</label>
+                    <input type="password" value={techForm.mot_de_passe} onChange={e => setTechForm({...techForm, mot_de_passe: e.target.value})} required className="form-control" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text)' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Région</label>
+                    <input type="text" value={techForm.region} onChange={e => setTechForm({...techForm, region: e.target.value})} required className="form-control" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text)' }} />
+                  </div>
+                  <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem', justifyContent: 'center' }} disabled={techFormStatus.loading}>
+                    {techFormStatus.loading ? 'Création...' : 'Créer le technicien'}
+                  </button>
+                </form>
+              </section>
+            </aside>
           </div>
         </div>
       </div>

@@ -75,4 +75,29 @@ def init_technicien(secret_key: str, db: Session = Depends(get_db)):
     )
     db.add(new_admin)
     db.commit()
-    return {"message": "Compte technicien créé avec succès"}
+from pydantic import BaseModel
+
+class TechnicienCreate(BaseModel):
+    nom_complet: str
+    email: str
+    mot_de_passe: str
+    region: str
+
+@router.post("/creer-technicien")
+def creer_technicien(tech: TechnicienCreate, db: Session = Depends(get_db), current_user: User = Depends(require_technicien)):
+    existing_user = db.query(User).filter(User.email == tech.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email déjà utilisé")
+        
+    hashed_password = get_password_hash(tech.mot_de_passe)
+    new_tech = User(
+        nom_complet=tech.nom_complet,
+        email=tech.email,
+        mot_de_passe_hash=hashed_password,
+        role="technicien",
+        region=tech.region
+    )
+    db.add(new_tech)
+    db.commit()
+    db.refresh(new_tech)
+    return new_tech
