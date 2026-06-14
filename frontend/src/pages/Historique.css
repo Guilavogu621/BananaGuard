@@ -203,3 +203,19 @@
     display: none;
   }
 }
+
+/* ===== MOBILE RESPONSIVENESS FIXES ===== */
+@media (max-width: 768px) {
+  .historique-table, .analyses-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  /* Cacher les colonnes secondaires (ex: Date qui est nth-child(4)) */
+  .analyses-table th:nth-child(4),
+  .analyses-table td:nth-child(4),
+  .historique-table th:nth-child(4),
+  .historique-table td:nth-child(4) {
+    display: none;
+  }
+}

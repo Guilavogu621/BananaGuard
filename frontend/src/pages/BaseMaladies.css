@@ -196,3 +196,16 @@
   font-size: 0.9rem;
   line-height: 1.6;
 }
+
+/* ===== MOBILE RESPONSIVENESS FIXES ===== */
+@media (max-width: 768px) {
+  .tabs, .tab-buttons {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tabs button, .tab-buttons button, .tab-button {
+    flex: 1;
+    min-width: 120px;
+    font-size: 0.85rem;
+  }
+}
