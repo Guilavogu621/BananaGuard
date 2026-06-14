@@ -151,7 +151,7 @@ const Dashboard = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="stat-card">
               <div className="stat-icon danger"><AlertCircle size={24} /></div>
               <div className="stat-info">
-                <span className="stat-value">{topMaladies.length > 0 ? topMaladies[0].maladie : 'Aucune'}</span>
+                <span className="stat-value" style={{ fontSize: '0.75rem', lineHeight: '1.2' }}>{topMaladies.length > 0 ? topMaladies[0].maladie : 'Aucune'}</span>
                 <span className="stat-label">Top Maladie #1</span>
               </div>
             </motion.div>
