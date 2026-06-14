@@ -165,7 +165,7 @@ const Dashboard = () => {
             </motion.div>
           </div>
 
-          <div className="dashboard-content" style={{ gridTemplateColumns: isMobile ? '1fr' : undefined }}>
+          <div className="dashboard-content" style={{ gridTemplateColumns: '1fr' }}>
             <section className="content-section">
               <div className="section-head">
                 <h2>Dernières Analyses (Tous Agriculteurs)</h2>
@@ -193,7 +193,7 @@ const Dashboard = () => {
                       />
                       <div className="analysis-info">
                         <h4>{analysis.maladie}</h4>
-                        <p>{new Date(analysis.date_analyse).toLocaleDateString('fr-FR')} à {new Date(analysis.date_analyse).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})} - <strong>{analysis.nom_agriculteur || 'Inconnu'}</strong></p>
+                        <p>{new Date(analysis.date_analyse).toLocaleDateString('fr-FR')} à {new Date(analysis.date_analyse).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}</p>
                       </div>
                       <div className="analysis-result">
                         <span className="confiance-badge">{Math.round(analysis.confiance * 100)}% de confiance</span>
