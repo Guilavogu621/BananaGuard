@@ -26,6 +26,7 @@ const Dashboard = () => {
     sains: 0,
     dernier: 'Aucun'
   });
+  const [recentAnalyses, setRecentAnalyses] = useState([]);
   const [techForm, setTechForm] = useState({ nom_complet: '', email: '', mot_de_passe: '', region: 'Toutes' });
   const [techFormStatus, setTechFormStatus] = useState({ loading: false, error: null, success: null });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
