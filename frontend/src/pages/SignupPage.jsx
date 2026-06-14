@@ -11,7 +11,6 @@ const SignupPage = () => {
     nom: '',
     email: '',
     password: '',
-    typeCompte: 'Agriculteur',
     region: 'Conakry'
   });
   const [error, setError] = useState('');
@@ -44,11 +43,9 @@ const SignupPage = () => {
         nom_complet: formData.nom,
         email: formData.email,
         mot_de_passe: formData.password,
-        role: formData.typeCompte.toLowerCase(),
+        role: 'agriculteur', // Rôle fixe pour l'inscription publique
         region: formData.region
       });
-      
-      console.log('Inscription réussie:', response.data);
       
       // Auto-login après inscription
       const loginResponse = await authAPI.login({
@@ -114,23 +111,13 @@ const SignupPage = () => {
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Type de compte</label>
-              <select name="typeCompte" onChange={handleChange}>
-                <option value="Agriculteur">Agriculteur</option>
-                <option value="Technicien">Technicien</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Région (Guinée)</label>
-              <select name="region" onChange={handleChange}>
-                {prefectures.map(pref => (
-                  <option key={pref} value={pref}>{pref}</option>
-                ))}
-              </select>
-            </div>
+          <div className="form-group">
+            <label>Région (Guinée)</label>
+            <select name="region" onChange={handleChange}>
+              {prefectures.map(pref => (
+                <option key={pref} value={pref}>{pref}</option>
+              ))}
+            </select>
           </div>
 
           <button type="submit" className="btn btn-primary auth-btn">

@@ -17,6 +17,9 @@ import './Historique.css';
 
 const Historique = () => {
   const navigate = useNavigate();
+  let user = { nom_complet: 'Utilisateur' };
+  try { user = JSON.parse(localStorage.getItem('user')) || { nom_complet: 'Utilisateur' }; } catch (e) { user = { nom_complet: 'Utilisateur' }; }
+
   const [loading, setLoading] = useState(true);
   const [analyses, setAnalyses] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -161,6 +164,7 @@ const Historique = () => {
                   <tr>
                     <th>Aperçu</th>
                     <th>Date</th>
+                    {user.role === 'technicien' && <th>Agriculteur</th>}
                     <th>Résultat</th>
                     <th>Confiance</th>
                     <th>Actions</th>
@@ -192,6 +196,13 @@ const Historique = () => {
                           {new Date(item.date_analyse).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                         </div>
                       </td>
+                      {user.role === 'technicien' && (
+                        <td>
+                          <div style={{ fontWeight: 500, color: 'var(--text)' }}>
+                            {item.nom_agriculteur || 'Inconnu'}
+                          </div>
+                        </td>
+                      )}
                       <td>
                           <span className={`status-badge ${item.maladie === 'Incertain' ? 'incertain' : (item.maladie.toLowerCase().includes('sain') || item.maladie.toLowerCase().includes('healthy')) ? 'sain' : 'malade'}`}>
                             {item.maladie}

@@ -12,8 +12,17 @@ router = APIRouter(prefix="/api/historique", tags=["historique"])
 
 @router.get("/")
 def get_historique(skip: int = 0, limit: int = 100, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    analyses = db.query(Analyse).filter(Analyse.user_id == current_user.id).order_by(Analyse.date_analyse.desc()).offset(skip).limit(limit).all()
-    return analyses
+    if current_user.role == "technicien":
+        analyses = db.query(Analyse, User.nom_complet).join(User, Analyse.user_id == User.id).order_by(Analyse.date_analyse.desc()).offset(skip).limit(limit).all()
+        result = []
+        for analyse, nom_agriculteur in analyses:
+            analyse_dict = {c.name: getattr(analyse, c.name) for c in analyse.__table__.columns}
+            analyse_dict["nom_agriculteur"] = nom_agriculteur
+            result.append(analyse_dict)
+        return result
+    else:
+        analyses = db.query(Analyse).filter(Analyse.user_id == current_user.id).order_by(Analyse.date_analyse.desc()).offset(skip).limit(limit).all()
+        return analyses
 
 @router.get("/export")
 def export_historique_csv(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
