@@ -165,7 +165,7 @@ const Dashboard = () => {
             </motion.div>
           </div>
 
-          <div className="dashboard-content" style={{ gridTemplateColumns: '1fr' }}>
+          <div className="dashboard-content" style={{ gridTemplateColumns: '1fr', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <section className="content-section">
               <div className="section-head">
                 <h2>Dernières Analyses (Tous Agriculteurs)</h2>
