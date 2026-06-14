@@ -50,8 +50,8 @@ const Dashboard = () => {
 
         if (user.role === 'technicien') {
           const [statsRes, analysesRes] = await Promise.all([
-            api.get(`/admin/statistiques`,
-            api.get(`/historique/`
+            api.get(`/admin/statistiques`),
+            api.get(`/historique/`)
           ]);
           setRecentAnalyses(analysesRes.data.slice(0, 5));
           setStats({
@@ -60,9 +60,7 @@ const Dashboard = () => {
             maladiesDetectees: statsRes.data.maladies_par_region,
           });
         } else {
-          const response = await api.get(`/historique/`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const response = await api.get(`/historique/`);
 
           const data = response.data;
           setRecentAnalyses(data.slice(0, 3));
