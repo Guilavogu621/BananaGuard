@@ -8,6 +8,7 @@ import BaseMaladies from './pages/BaseMaladies';
 import UploadPage from './pages/UploadPage';
 import ResultPage from './pages/ResultPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/resultat/:id" element={<ResultPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/admin" element={<AdminPage />} />
             
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

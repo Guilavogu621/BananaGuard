@@ -66,7 +66,7 @@ const Navbar = () => {
     navLinks.push({ name: 'Dashboard', path: '/dashboard' });
     navLinks.push({ name: 'Historique', path: '/historique' });
     if (user.role === 'technicien') {
-      navLinks.push({ name: 'Administration', path: '/dashboard' });
+      navLinks.push({ name: 'Administration', path: '/admin' });
     }
   }
 
