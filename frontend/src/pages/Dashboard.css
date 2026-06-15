@@ -115,7 +115,7 @@
   gap: 1.5rem;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
   .dashboard-content {
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
@@ -258,4 +258,48 @@
 .empty-state svg {
   margin-bottom: 1rem;
   opacity: 0.3;
+}
+
+/* ===== RESULT PAGE GRID ===== */
+.result-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .result-grid {
+    grid-template-columns: 1fr 1.5fr;
+  }
+}
+
+/* ===== MOBILE RESPONSIVENESS FIXES ===== */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stat-card {
+    padding: 0.75rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .stat-value {
+    font-size: 0.85rem;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.2;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+  }
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
