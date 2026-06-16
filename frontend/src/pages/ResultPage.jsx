@@ -93,7 +93,7 @@ const ResultPage = () => {
           </div>
         </header>
 
-        <div className="dashboard-content" style={{ gridTemplateColumns: '1fr 1.5fr' }}>
+        <div className="dashboard-content result-grid">
           {/* Image & Main Info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}

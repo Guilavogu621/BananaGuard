@@ -3,17 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import { Users, History, UserPlus, Loader2, Filter } from 'lucide-react';
 import api from '../api';
 import './Dashboard.css';
+<<<<<<< HEAD
+=======
+import './AdminPage.css';
+>>>>>>> origin/develop
 
 const AdminPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('utilisateurs');
   const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
   
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [analyses, setAnalyses] = useState([]);
   
   const [userRoleFilter, setUserRoleFilter] = useState('Tous');
   
+=======
+
+  const [utilisateurs, setUtilisateurs] = useState([]);
+  const [analyses, setAnalyses] = useState([]);
+
+  const [userRoleFilter, setUserRoleFilter] = useState('Tous');
+
+>>>>>>> origin/develop
   const [techForm, setTechForm] = useState({ nom_complet: '', email: '', mot_de_passe: '', region: 'Toutes' });
   const [techFormStatus, setTechFormStatus] = useState({ loading: false, error: null, success: null });
 
@@ -86,6 +99,7 @@ const AdminPage = () => {
           </div>
         </header>
 
+<<<<<<< HEAD
         <div className="tabs-container" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem', overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <button 
             className={`btn ${activeTab === 'utilisateurs' ? 'btn-primary' : 'btn-outline'}`}
@@ -104,12 +118,33 @@ const AdminPage = () => {
             onClick={() => setActiveTab('analyses')}
           >
             <History size={18} /> Toutes les analyses
+=======
+        <div className="admin-tabs">
+          <button
+            className={`admin-tab ${activeTab === 'utilisateurs' ? 'active' : ''}`}
+            onClick={() => setActiveTab('utilisateurs')}
+          >
+            <Users size={16} /> <span>Utilisateurs</span>
+          </button>
+          <button
+            className={`admin-tab ${activeTab === 'creer-tech' ? 'active' : ''}`}
+            onClick={() => setActiveTab('creer-tech')}
+          >
+            <UserPlus size={16} /> <span>Créer technicien</span>
+          </button>
+          <button
+            className={`admin-tab ${activeTab === 'analyses' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analyses')}
+          >
+            <History size={16} /> <span>Toutes les analyses</span>
+>>>>>>> origin/develop
           </button>
         </div>
 
         <div className="dashboard-content" style={{ gridTemplateColumns: '1fr' }}>
           {activeTab === 'utilisateurs' && (
             <section className="content-section">
+<<<<<<< HEAD
               <div className="section-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2>Liste des utilisateurs</h2>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -118,6 +153,16 @@ const AdminPage = () => {
                     value={userRoleFilter} 
                     onChange={(e) => setUserRoleFilter(e.target.value)}
                     style={{ padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text)' }}
+=======
+              <div className="section-head">
+                <h2>Liste des utilisateurs</h2>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <Filter size={18} style={{ color: 'var(--text-muted)' }} />
+                  <select
+                    className="filter-select"
+                    value={userRoleFilter}
+                    onChange={(e) => setUserRoleFilter(e.target.value)}
+>>>>>>> origin/develop
                   >
                     <option value="Tous">Tous</option>
                     <option value="Agriculteurs">Agriculteurs</option>
@@ -125,6 +170,7 @@ const AdminPage = () => {
                   </select>
                 </div>
               </div>
+<<<<<<< HEAD
               
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
@@ -134,10 +180,22 @@ const AdminPage = () => {
                       <th style={{ padding: '1rem 0.5rem' }}>Email</th>
                       <th style={{ padding: '1rem 0.5rem' }}>Rôle</th>
                       <th style={{ padding: '1rem 0.5rem' }}>Région</th>
+=======
+
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>Email</th>
+                      <th>Rôle</th>
+                      <th className="hide-mobile">Région</th>
+>>>>>>> origin/develop
                     </tr>
                   </thead>
                   <tbody>
                     {filteredUtilisateurs.map(u => (
+<<<<<<< HEAD
                       <tr key={u.id} style={{ borderBottom: '1px solid var(--border)' }}>
                         <td style={{ padding: '1rem 0.5rem', fontWeight: 500 }}>{u.nom_complet}</td>
                         <td style={{ padding: '1rem 0.5rem', color: 'var(--text-muted)' }}>{u.email}</td>
@@ -154,6 +212,17 @@ const AdminPage = () => {
                           </span>
                         </td>
                         <td style={{ padding: '1rem 0.5rem' }}>{u.region}</td>
+=======
+                      <tr key={u.id}>
+                        <td style={{ fontWeight: 500 }}>{u.nom_complet}</td>
+                        <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
+                        <td>
+                          <span className={`role-badge ${u.role}`}>
+                            {u.role === 'technicien' ? 'Technicien' : 'Agriculteur'}
+                          </span>
+                        </td>
+                        <td className="hide-mobile">{u.region}</td>
+>>>>>>> origin/develop
                       </tr>
                     ))}
                   </tbody>
@@ -166,6 +235,7 @@ const AdminPage = () => {
           )}
 
           {activeTab === 'creer-tech' && (
+<<<<<<< HEAD
             <section className="content-section" style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
               <div className="section-head">
                 <h2>Nouveau Technicien</h2>
@@ -189,6 +259,31 @@ const AdminPage = () => {
                 <div style={{ marginBottom: '1.5rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Région</label>
                   <input type="text" value={techForm.region} onChange={e => setTechForm({...techForm, region: e.target.value})} required style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text)' }} />
+=======
+            <section className="content-section admin-form-section">
+              <div className="section-head">
+                <h2>Nouveau Technicien</h2>
+              </div>
+              <form onSubmit={handleCreateTech} className="admin-form">
+                {techFormStatus.error && <div className="admin-alert admin-alert-error">{techFormStatus.error}</div>}
+                {techFormStatus.success && <div className="admin-alert admin-alert-success">{techFormStatus.success}</div>}
+
+                <div className="admin-field">
+                  <label>Nom complet</label>
+                  <input type="text" value={techForm.nom_complet} onChange={e => setTechForm({...techForm, nom_complet: e.target.value})} required />
+                </div>
+                <div className="admin-field">
+                  <label>Email</label>
+                  <input type="email" value={techForm.email} onChange={e => setTechForm({...techForm, email: e.target.value})} required />
+                </div>
+                <div className="admin-field">
+                  <label>Mot de passe</label>
+                  <input type="password" value={techForm.mot_de_passe} onChange={e => setTechForm({...techForm, mot_de_passe: e.target.value})} required />
+                </div>
+                <div className="admin-field">
+                  <label>Région</label>
+                  <input type="text" value={techForm.region} onChange={e => setTechForm({...techForm, region: e.target.value})} required />
+>>>>>>> origin/develop
                 </div>
                 <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={techFormStatus.loading}>
                   {techFormStatus.loading ? 'Création en cours...' : 'Créer le technicien'}
@@ -202,6 +297,7 @@ const AdminPage = () => {
               <div className="section-head">
                 <h2>Historique Global</h2>
               </div>
+<<<<<<< HEAD
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
                   <thead>
@@ -234,6 +330,37 @@ const AdminPage = () => {
                         </td>
                       </tr>
                     ))}
+=======
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Maladie</th>
+                      <th>Agriculteur</th>
+                      <th className="hide-mobile">Confiance</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {analyses.map(a => {
+                      const isSain = a.maladie.toLowerCase().includes('sain') || a.maladie.toLowerCase().includes('healthy');
+                      const isIncertain = a.maladie === 'Incertain';
+                      return (
+                        <tr key={a.id}>
+                          <td>
+                            <span className={`status-badge ${isIncertain ? 'incertain' : isSain ? 'sain' : 'malade'}`}>
+                              {a.maladie}
+                            </span>
+                          </td>
+                          <td>{a.nom_agriculteur || 'Inconnu'}</td>
+                          <td className="hide-mobile" style={{ fontWeight: 600, color: 'var(--primary)' }}>{Math.round(a.confiance * 100)}%</td>
+                          <td style={{ color: 'var(--text-muted)', fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+                            {new Date(a.date_analyse).toLocaleDateString('fr-FR')}
+                          </td>
+                        </tr>
+                      );
+                    })}
+>>>>>>> origin/develop
                   </tbody>
                 </table>
                 {analyses.length === 0 && (

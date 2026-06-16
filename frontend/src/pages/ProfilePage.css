@@ -154,12 +154,19 @@
   margin-top: 1rem;
 }
 
+/* FORM ROW — 2 colonnes côte à côte sur desktop */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 /* RESPONSIVE DESIGN */
 @media (max-width: 600px) {
   .profile-container {
     padding: 90px 1rem 40px;
   }
-  
+
   .profile-card {
     padding: 2rem 1.5rem;
   }
