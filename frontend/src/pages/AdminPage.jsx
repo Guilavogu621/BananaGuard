@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, History, UserPlus, Loader2, Filter } from 'lucide-react';
+import { Users, History, UserPlus, Loader2, Filter, Pencil, Trash2, Ban, CheckCircle } from 'lucide-react';
 import api from '../api';
 import './Dashboard.css';
 import './AdminPage.css';
+
+const REGIONS = ['Toutes', 'Conakry', 'Kindia', 'Boké', 'Mamou', 'Labé', 'Faranah', 'Kankan', 'N\'Zérékoré'];
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -18,8 +20,25 @@ const AdminPage = () => {
   const [techForm, setTechForm] = useState({ nom_complet: '', email: '', mot_de_passe: '', region: 'Toutes' });
   const [techFormStatus, setTechFormStatus] = useState({ loading: false, error: null, success: null });
 
+  // Modal édition
+  const [editModal, setEditModal] = useState({ open: false, user: null });
+  const [editForm, setEditForm] = useState({ nom_complet: '', role: '', region: '' });
+  const [editStatus, setEditStatus] = useState({ loading: false, error: null });
+
+  // Modal suppression
+  const [deleteModal, setDeleteModal] = useState({ open: false, user: null });
+  const [deleteStatus, setDeleteStatus] = useState({ loading: false, error: null });
+
+  // Suspension en cours (par id)
+  const [suspendLoading, setSuspendLoading] = useState(null);
+
   let user = { nom_complet: 'Utilisateur', role: 'agriculteur' };
   try { user = JSON.parse(localStorage.getItem('user')) || { nom_complet: 'Utilisateur', role: 'agriculteur' }; } catch (e) { /* ignore */ }
+
+  const fetchUtilisateurs = async () => {
+    const usersRes = await api.get('/admin/utilisateurs');
+    setUtilisateurs(usersRes.data);
+  };
 
   useEffect(() => {
     if (user.role !== 'technicien') {
@@ -53,10 +72,58 @@ const AdminPage = () => {
       await api.post('/admin/creer-technicien', techForm);
       setTechFormStatus({ loading: false, error: null, success: 'Technicien créé avec succès !' });
       setTechForm({ nom_complet: '', email: '', mot_de_passe: '', region: 'Toutes' });
-      const usersRes = await api.get('/admin/utilisateurs');
-      setUtilisateurs(usersRes.data);
+      await fetchUtilisateurs();
     } catch (err) {
       setTechFormStatus({ loading: false, error: err.response?.data?.detail || 'Erreur lors de la création', success: null });
+    }
+  };
+
+  // ── Édition ────────────────────────────────────────────────────────────────
+  const openEditModal = (u) => {
+    setEditForm({ nom_complet: u.nom_complet, role: u.role, region: u.region || '' });
+    setEditStatus({ loading: false, error: null });
+    setEditModal({ open: true, user: u });
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setEditStatus({ loading: true, error: null });
+    try {
+      await api.put(`/admin/utilisateurs/${editModal.user.id}`, editForm);
+      setEditModal({ open: false, user: null });
+      await fetchUtilisateurs();
+    } catch (err) {
+      setEditStatus({ loading: false, error: err.response?.data?.detail || 'Erreur lors de la modification' });
+    }
+  };
+
+  // ── Suspension ─────────────────────────────────────────────────────────────
+  const handleSuspend = async (u) => {
+    setSuspendLoading(u.id);
+    try {
+      await api.patch(`/admin/utilisateurs/${u.id}/suspendre`);
+      await fetchUtilisateurs();
+    } catch (err) {
+      console.error("Erreur suspension:", err);
+    } finally {
+      setSuspendLoading(null);
+    }
+  };
+
+  // ── Suppression ────────────────────────────────────────────────────────────
+  const openDeleteModal = (u) => {
+    setDeleteStatus({ loading: false, error: null });
+    setDeleteModal({ open: true, user: u });
+  };
+
+  const handleDelete = async () => {
+    setDeleteStatus({ loading: true, error: null });
+    try {
+      await api.delete(`/admin/utilisateurs/${deleteModal.user.id}`);
+      setDeleteModal({ open: false, user: null });
+      await fetchUtilisateurs();
+    } catch (err) {
+      setDeleteStatus({ loading: false, error: err.response?.data?.detail || 'Erreur lors de la suppression' });
     }
   };
 
@@ -109,6 +176,7 @@ const AdminPage = () => {
         </div>
 
         <div className="dashboard-content" style={{ gridTemplateColumns: '1fr' }}>
+          {/* ── Onglet Utilisateurs ── */}
           {activeTab === 'utilisateurs' && (
             <section className="content-section">
               <div className="section-head">
@@ -135,21 +203,60 @@ const AdminPage = () => {
                       <th>Email</th>
                       <th>Rôle</th>
                       <th className="hide-mobile">Région</th>
+                      <th>Statut</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredUtilisateurs.map(u => (
-                      <tr key={u.id}>
-                        <td style={{ fontWeight: 500 }}>{u.nom_complet}</td>
-                        <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
-                        <td>
-                          <span className={`role-badge ${u.role}`}>
-                            {u.role === 'technicien' ? 'Technicien' : 'Agriculteur'}
-                          </span>
-                        </td>
-                        <td className="hide-mobile">{u.region}</td>
-                      </tr>
-                    ))}
+                    {filteredUtilisateurs.map(u => {
+                      const actif = u.is_active !== false;
+                      return (
+                        <tr key={u.id} className={!actif ? 'row-suspended' : ''}>
+                          <td style={{ fontWeight: 500 }}>{u.nom_complet}</td>
+                          <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
+                          <td>
+                            <span className={`role-badge ${u.role}`}>
+                              {u.role === 'technicien' ? 'Technicien' : 'Agriculteur'}
+                            </span>
+                          </td>
+                          <td className="hide-mobile">{u.region}</td>
+                          <td>
+                            <span className={`status-pill ${actif ? 'actif' : 'suspendu'}`}>
+                              {actif ? 'Actif' : 'Suspendu'}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="action-btns">
+                              <button
+                                className="action-btn edit"
+                                title="Modifier"
+                                onClick={() => openEditModal(u)}
+                              >
+                                <Pencil size={15} />
+                              </button>
+                              <button
+                                className={`action-btn suspend ${!actif ? 'reactivate' : ''}`}
+                                title={actif ? 'Suspendre' : 'Réactiver'}
+                                onClick={() => handleSuspend(u)}
+                                disabled={suspendLoading === u.id}
+                              >
+                                {suspendLoading === u.id
+                                  ? <Loader2 size={15} className="spinner-sm" />
+                                  : actif ? <Ban size={15} /> : <CheckCircle size={15} />
+                                }
+                              </button>
+                              <button
+                                className="action-btn delete"
+                                title="Supprimer"
+                                onClick={() => openDeleteModal(u)}
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
                 {filteredUtilisateurs.length === 0 && (
@@ -159,6 +266,7 @@ const AdminPage = () => {
             </section>
           )}
 
+          {/* ── Onglet Créer technicien ── */}
           {activeTab === 'creer-tech' && (
             <section className="content-section admin-form-section">
               <div className="section-head">
@@ -191,6 +299,7 @@ const AdminPage = () => {
             </section>
           )}
 
+          {/* ── Onglet Analyses ── */}
           {activeTab === 'analyses' && (
             <section className="content-section">
               <div className="section-head">
@@ -235,6 +344,73 @@ const AdminPage = () => {
           )}
         </div>
       </div>
+
+      {/* ── Modal Édition ── */}
+      {editModal.open && (
+        <div className="admin-modal-overlay" onClick={() => setEditModal({ open: false, user: null })}>
+          <div className="admin-modal" onClick={e => e.stopPropagation()}>
+            <h3>Modifier l'utilisateur</h3>
+            <p className="modal-subtitle">{editModal.user?.email}</p>
+            <form onSubmit={handleEdit} className="admin-form">
+              {editStatus.error && <div className="admin-alert admin-alert-error">{editStatus.error}</div>}
+              <div className="admin-field">
+                <label>Nom complet</label>
+                <input
+                  type="text"
+                  value={editForm.nom_complet}
+                  onChange={e => setEditForm({...editForm, nom_complet: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="admin-field">
+                <label>Rôle</label>
+                <select value={editForm.role} onChange={e => setEditForm({...editForm, role: e.target.value})}>
+                  <option value="agriculteur">Agriculteur</option>
+                  <option value="technicien">Technicien</option>
+                </select>
+              </div>
+              <div className="admin-field">
+                <label>Région</label>
+                <select value={editForm.region} onChange={e => setEditForm({...editForm, region: e.target.value})}>
+                  {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                </select>
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="btn btn-outline" onClick={() => setEditModal({ open: false, user: null })}>
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={editStatus.loading}>
+                  {editStatus.loading ? 'Sauvegarde...' : 'Sauvegarder'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Suppression ── */}
+      {deleteModal.open && (
+        <div className="admin-modal-overlay" onClick={() => setDeleteModal({ open: false, user: null })}>
+          <div className="admin-modal admin-modal-danger" onClick={e => e.stopPropagation()}>
+            <div className="modal-danger-icon">
+              <Trash2 size={28} />
+            </div>
+            <h3>Supprimer l'utilisateur ?</h3>
+            <p className="modal-subtitle">
+              Cette action est <strong>irréversible</strong>. L'utilisateur <strong>{deleteModal.user?.nom_complet}</strong> et toutes ses données seront supprimés.
+            </p>
+            {deleteStatus.error && <div className="admin-alert admin-alert-error">{deleteStatus.error}</div>}
+            <div className="modal-actions">
+              <button type="button" className="btn btn-outline" onClick={() => setDeleteModal({ open: false, user: null })}>
+                Annuler
+              </button>
+              <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={deleteStatus.loading}>
+                {deleteStatus.loading ? 'Suppression...' : 'Supprimer définitivement'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

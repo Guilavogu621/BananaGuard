@@ -23,9 +23,15 @@ class UserResponse(BaseModel):
     email: EmailStr
     role: str
     region: Optional[str]
+    is_active: Optional[bool] = True
 
     class Config:
         from_attributes = True
+
+class UserAdminUpdate(BaseModel):
+    nom_complet: Optional[str] = None
+    role: Optional[str] = None
+    region: Optional[str] = None
 
 class Token(BaseModel):
     access_token: str
