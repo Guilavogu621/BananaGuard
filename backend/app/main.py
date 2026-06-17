@@ -2,12 +2,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
+from sqlalchemy import text
 from app.database import Base, engine
 from app.models import user, analyse
-from app.routes import auth, historique, analyse, maladies
+from app.routes import auth, historique, analyse, maladies, admin
 
-# Création des tables dans la base de données 
+# Création des tables dans la base de données
 Base.metadata.create_all(bind=engine)
+
+# Migration: ajout colonne is_active si elle n'existe pas encore
+try:
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT 1"))
+        conn.commit()
+except Exception:
+    pass  # colonne déjà présente
 
 app = FastAPI(
     title="BananaGuard API",
@@ -36,6 +45,7 @@ app.include_router(auth.router)
 app.include_router(historique.router)
 app.include_router(analyse.router)
 app.include_router(maladies.router)
+app.include_router(admin.router)
 
 @app.get("/")
 def read_root():
