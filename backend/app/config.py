@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     model_path: str = os.path.join(BASE_DIR, "ai_model", "model", "bananaguard_best.h5")
     classes_path: str = os.path.join(BASE_DIR, "ai_model", "model", "resultats_complets_modifie.json")
 
+    # Cloudinary
+    cloudinary_cloud_name: str = ""
+    cloudinary_api_key: str = ""
+    cloudinary_api_secret: str = ""
+
     class Config:
         env_file = ".env"
 
