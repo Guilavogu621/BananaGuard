@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -12,3 +12,4 @@ class User(Base):
     role = Column(String, default="agriculteur") # agriculteur, technicien, etudiant etc.
     region = Column(String, nullable=True) # Kindia, Forécariah, etc.
     date_creation = Column(DateTime(timezone=True), server_default=func.now())
+    is_active = Column(Boolean, default=True, nullable=True)
