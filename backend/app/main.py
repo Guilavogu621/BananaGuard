@@ -11,12 +11,13 @@ from app.routes import auth, historique, analyse, maladies, admin
 Base.metadata.create_all(bind=engine)
 
 # Migration: ajout colonne is_active si elle n'existe pas encore
+# IF NOT EXISTS évite l'erreur si la colonne existe déjà (PostgreSQL + SQLite)
 try:
     with engine.connect() as conn:
-        conn.execute(text("ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT 1"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE"))
         conn.commit()
 except Exception:
-    pass  # colonne déjà présente
+    pass  # SQLite < 3.35 ne supporte pas IF NOT EXISTS — ignoré
 
 app = FastAPI(
     title="BananaGuard API",
